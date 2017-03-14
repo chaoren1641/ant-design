@@ -1,20 +1,26 @@
-# 小型进度圈
+---
+order: 3
+title:
+  zh-CN: 小型进度圈
+  en-US: Mini size circular progress bar
+---
 
-- order: 3
+## zh-CN
 
 小一号的圈形进度。
 
----
+## en-US
+
+A smaller circular progress bar.
 
 ````jsx
-import { Progress, Icon } from 'antd';
-const ProgressCircle = Progress.Circle;
+import { Progress } from 'antd';
 
 ReactDOM.render(
   <div>
-    <ProgressCircle percent={30} width={80} />
-    <ProgressCircle percent={70} width={80} status="exception" format={<Icon type="exclamation" />} />
-    <ProgressCircle percent={100} width={80} />
+    <Progress type="circle" percent={30} width={80} />
+    <Progress type="circle" percent={70} width={80} status="exception" />
+    <Progress type="circle" percent={100} width={80} />
   </div>
-  , document.getElementById('components-progress-demo-circle-mini'));
+, mountNode);
 ````

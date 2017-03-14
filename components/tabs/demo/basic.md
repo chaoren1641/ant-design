@@ -1,10 +1,17 @@
-# 基本
+---
+order: 0
+title:
+  zh-CN: 基本
+  en-US: Basic
+---
 
-- order: 0
+## zh-CN
 
 默认选中第一项。
 
----
+## en-US
+
+Default activate first tab.
 
 ````jsx
 import { Tabs } from 'antd';
@@ -16,9 +23,9 @@ function callback(key) {
 
 ReactDOM.render(
   <Tabs defaultActiveKey="1" onChange={callback}>
-    <TabPane tab="选项卡一" key="1">选项卡一内容</TabPane>
-    <TabPane tab="选项卡二" key="2">选项卡二内容</TabPane>
-    <TabPane tab="选项卡三" key="3">选项卡三内容</TabPane>
+    <TabPane tab="Tab 1" key="1">Content of Tab Pane 1</TabPane>
+    <TabPane tab="Tab 2" key="2">Content of Tab Pane 2</TabPane>
+    <TabPane tab="Tab 3" key="3">Content of Tab Pane 3</TabPane>
   </Tabs>
-, document.getElementById('components-tabs-demo-basic'));
+, mountNode);
 ````

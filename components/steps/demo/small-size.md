@@ -1,33 +1,27 @@
-# 迷你版
+---
+order: 1
+title:
+  zh-CN: 迷你版
+  en-US: Mini version
+---
 
-- order: 1
+## zh-CN
 
 迷你版的步骤条，通过设置 `<Steps size="small">` 启用.
 
----
+## en-US
+
+By setting like this: `<Steps size="small">`, you can get a mini version.
 
 ````jsx
 import { Steps } from 'antd';
 const Step = Steps.Step;
-const container = document.getElementById('components-steps-demo-small-size');
 
-const steps = [{
-  status: 'finish',
-  title: '已完成'
-}, {
-  status: 'process',
-  title: '进行中'
-}, {
-  status: 'wait',
-  title: '待运行'
-}, {
-  status: 'wait',
-  title: '待运行'
-}].map(function(s, i) {
-  return (
-    <Step key={i} title={s.title} description={s.description} />
-  );
-});
-
-ReactDOM.render(<Steps size="small" current={1}>{steps}</Steps>, container);
+ReactDOM.render(
+  <Steps size="small" current={1}>
+    <Step title="Finished" />
+    <Step title="In Progress" />
+    <Step title="Waiting" />
+  </Steps>
+, mountNode);
 ````

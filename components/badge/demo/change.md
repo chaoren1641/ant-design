@@ -1,73 +1,71 @@
-# 动态
+---
+order: 4
+title:
+  zh-CN: 动态
+  en-US: Dynamic
+---
 
-- order: 4
+## zh-CN
 
 展示动态变化的效果。
 
----
+## en-US
+
+The count will be animated as it changes.
 
 ````jsx
-import { Badge, Button, Icon } from 'antd';
+import { Badge, Button, Icon, Switch } from 'antd';
 const ButtonGroup = Button.Group;
 
-const Test = React.createClass({
-  getInitialState() {
-    return {
-      count: 5,
-      show: true,
-    };
-  },
-  increase() {
+class Demo extends React.Component {
+  state = {
+    count: 5,
+    show: true,
+  }
+
+  increase = () => {
     const count = this.state.count + 1;
     this.setState({ count });
-  },
-  decline() {
+  }
+
+  decline = () => {
     let count = this.state.count - 1;
     if (count < 0) {
       count = 0;
     }
     this.setState({ count });
-  },
-  onClick() {
-    this.setState({
-      show: !this.state.show
-    });
-  },
-  onNumberClick() {
-    const count = this.state.count;
-    this.setState({
-      count: count ? 0 : 5
-    });
-  },
-  render() {
-    return <div>
-      <Badge count={this.state.count}>
-        <a href="#" className="head-example"></a>
-      </Badge>
-      <Badge dot={this.state.show}>
-        <a href="#" className="head-example"></a>
-      </Badge>
-      <div style={{ marginTop: 10 }}>
-        <Button type="ghost" onClick={this.onNumberClick} style={{marginRight: 6}}>
-          切换数字显隐
-        </Button>
-        <Button type="ghost" onClick={this.onClick} style={{marginRight: 6}}>
-          切换红点显隐
-        </Button>
-        <ButtonGroup>
-          <Button type="ghost" onClick={this.decline}>
-            <Icon type="minus" />
-          </Button>
-          <Button type="ghost" onClick={this.increase}>
-            <Icon type="plus" />
-          </Button>
-        </ButtonGroup>
-      </div>
-    </div>;
   }
-});
 
-ReactDOM.render(
-  <Test />
-, document.getElementById('components-badge-demo-change'));
+  onChange = (show) => {
+    this.setState({ show });
+  }
+
+  render() {
+    return (
+      <div>
+        <div>
+          <Badge count={this.state.count}>
+            <a href="#" className="head-example" />
+          </Badge>
+          <ButtonGroup>
+            <Button onClick={this.decline}>
+              <Icon type="minus" />
+            </Button>
+            <Button onClick={this.increase}>
+              <Icon type="plus" />
+            </Button>
+          </ButtonGroup>
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <Badge dot={this.state.show}>
+            <a href="#" className="head-example" />
+          </Badge>
+          <Switch onChange={this.onChange} />
+        </div>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Demo />, mountNode);
 ````

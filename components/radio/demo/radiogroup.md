@@ -1,38 +1,43 @@
-# RadioGroup 组合
+---
+order: 1
+title:
+  zh-CN: RadioGroup 组合
+  en-US: RadioGroup group
+---
 
-- order: 1
+## zh-CN
 
 一组互斥的 Radio 配合使用。
 
----
+## en-US
 
-````jsx
+A set of mutually exclusive Radio with the use of
+
+```jsx
 import { Radio } from 'antd';
 const RadioGroup = Radio.Group;
 
-const App = React.createClass({
-  getInitialState: function () {
-    return {
-      value: 'a'
-    };
-  },
-  onChange(e) {
-    console.log('radio checked:' + e.target.value);
-    this.setState({
-      value: e.target.value
-    });
-  },
-  render() {
-    return <div>
-      <RadioGroup onChange={this.onChange} value={this.state.value}>
-        <Radio value="a">A</Radio>
-        <Radio value="b">B</Radio>
-        <Radio value="c">C</Radio>
-        <Radio value="d">D</Radio>
-      </RadioGroup>
-      <div style={{marginTop: 20}}>你选中的: {this.state.value}</div>
-    </div>;
+class App extends React.Component {
+  state = {
+    value: 1,
   }
-});
-ReactDOM.render(<App />, document.getElementById('components-radio-demo-radiogroup'));
-````
+  onChange = (e) => {
+    console.log('radio checked', e.target.value);
+    this.setState({
+      value: e.target.value,
+    });
+  }
+  render() {
+    return (
+      <RadioGroup onChange={this.onChange} value={this.state.value}>
+        <Radio value={1}>A</Radio>
+        <Radio value={2}>B</Radio>
+        <Radio value={3}>C</Radio>
+        <Radio value={4}>D</Radio>
+      </RadioGroup>
+    );
+  }
+}
+
+ReactDOM.render(<App />, mountNode);
+```

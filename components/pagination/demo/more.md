@@ -1,15 +1,22 @@
-# 更多
+---
+order: 1
+title:
+  zh-CN: 更多
+  en-US: More
+---
 
-- order: 1
+## zh-CN
 
 更多分页。
 
----
+## en-US
+
+More pages.
 
 ````jsx
 import { Pagination } from 'antd';
 
 ReactDOM.render(
-  <Pagination defaultCurrent={1} total={500} />,
- document.getElementById('components-pagination-demo-more'));
+  <Pagination defaultCurrent={6} total={500} />
+, mountNode);
 ````

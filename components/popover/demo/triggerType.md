@@ -1,28 +1,39 @@
-# 三种触发方式
+---
+order: 1
+title:
+  zh-CN: 三种触发方式
+  en-US: Three ways to trigger
+---
 
-- order: 2
+## zh-CN
 
 鼠标移入、聚集、点击。
 
----
+## en-US
+
+Mouse to click, focus and move in.
 
 ````jsx
 import { Popover, Button } from 'antd';
 
-const content = <div>
-  <p>内容</p>
-  <p>内容</p>
-</div>;
+const content = (
+  <div>
+    <p>Content</p>
+    <p>Content</p>
+  </div>
+);
 
-ReactDOM.render(<div>
-  <Popover overlay={content} title="标题" trigger="hover">
-    <Button>移入</Button>
-  </Popover>
-  <Popover overlay={content} title="标题" trigger="focus">
-    <Button>聚焦</Button>
-  </Popover>
-  <Popover overlay={content} title="标题" trigger="click">
-    <Button>点击</Button>
-  </Popover>
-</div>, document.getElementById('components-popover-demo-triggertype'));
+ReactDOM.render(
+  <div>
+    <Popover content={content} title="Title" trigger="hover">
+      <Button>Hover me</Button>
+    </Popover>
+    <Popover content={content} title="Title" trigger="focus">
+      <Button>Focus me</Button>
+    </Popover>
+    <Popover content={content} title="Title" trigger="click">
+      <Button>Click me</Button>
+    </Popover>
+  </div>
+, mountNode);
 ````

@@ -1,48 +1,60 @@
-# 边框
-
-- order: 10
-
-添加表格边框线，`bordered`。
-
 ---
+order: 11
+title:
+  en-US: border, title and footer
+  zh-CN: 带边框
+---
+
+## zh-CN
+
+添加表格边框线，页头和页脚。
+
+## en-US
+
+Add border, title and footer for table.
 
 ````jsx
 import { Table } from 'antd';
 
 const columns = [{
-  title: '姓名',
+  title: 'Name',
   dataIndex: 'name',
-  render: function(text) {
-    return <a href="#">{text}</a>;
-  }
+  render: text => <a href="#">{text}</a>,
 }, {
-  title: '资产',
+  title: 'Cash Assets',
   className: 'column-money',
-  dataIndex: 'money'
+  dataIndex: 'money',
 }, {
-  title: '住址',
-  dataIndex: 'address'
+  title: 'Address',
+  dataIndex: 'address',
 }];
 
 const data = [{
   key: '1',
-  name: '胡彦斌',
+  name: 'John Brown',
   money: '￥300,000.00',
-  address: '西湖区湖底公园1号'
+  address: 'New York No. 1 Lake Park',
 }, {
   key: '2',
-  name: '胡彦祖',
+  name: 'Jim Green',
   money: '￥1,256,000.00',
-  address: '西湖区湖底公园1号'
+  address: 'London No. 1 Lake Park',
 }, {
   key: '3',
-  name: '李大嘴',
+  name: 'Joe Black',
   money: '￥120,000.00',
-  address: '西湖区湖底公园1号'
+  address: 'Sidney No. 1 Lake Park',
 }];
 
-ReactDOM.render(<Table columns={columns} dataSource={data} bordered />
-, document.getElementById('components-table-demo-bordered'));
+ReactDOM.render(
+  <Table
+    columns={columns}
+    dataSource={data}
+    bordered
+    title={() => 'Header'}
+    footer={() => 'Footer'}
+  />
+, mountNode);
 ````
 
 ````css

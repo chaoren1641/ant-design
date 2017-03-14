@@ -1,10 +1,17 @@
-# 垂直
+---
+order: 1
+title:
+  zh-CN: 垂直
+  en-US: Vertical
+---
 
-- order: 1
+## zh-CN
 
 垂直显示。
 
----
+## en-US
+
+Vertical pagination.
 
 ````jsx
 import { Carousel } from 'antd';
@@ -16,5 +23,5 @@ ReactDOM.render(
     <div><h3>3</h3></div>
     <div><h3>4</h3></div>
   </Carousel>
-, document.getElementById('components-carousel-demo-vertical'));
+, mountNode);
 ````

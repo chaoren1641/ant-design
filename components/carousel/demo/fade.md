@@ -1,10 +1,17 @@
-# 渐显
+---
+order: 2
+title:
+  zh-CN: 渐显
+  en-US: Fade in
+---
 
-- order: 2
+## zh-CN
 
 切换效果为渐显。
 
----
+## en-US
+
+Slides use fade for transition.
 
 ````jsx
 import { Carousel } from 'antd';
@@ -16,6 +23,6 @@ ReactDOM.render(
     <div><h3>3</h3></div>
     <div><h3>4</h3></div>
   </Carousel>
-, document.getElementById('components-carousel-demo-fade'));
+, mountNode);
 ````
 

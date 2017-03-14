@@ -1,56 +1,63 @@
-# 路由
-
-- order: 2
-
-和 `react-router@1.x` 进行结合使用。
-
+---
+order: 2
+iframe: true
+title:
+  zh-CN: 路由
+  en-US: React Router Integration
 ---
 
+## zh-CN
+
+和 `react-router@2+` 进行结合使用。
+
+## en-US
+
+Used together with `react-router@2+`.
+
 ````jsx
-const ReactRouter = require('react-router');
-let { Router, Route, Link } = ReactRouter;
-import { Breadcrumb } from 'antd';
+import { Router, Route, Link, hashHistory } from 'react-router';
+import { Breadcrumb, Alert } from 'antd';
 
-const Apps = React.createClass({
-  render() {
-    return <ul className="app-list">
-      <li><Link to="/apps/1">应用1</Link></li>
-      <li><Link to="/apps/2">应用2</Link></li>
-    </ul>;
-  }
-});
+const Apps = () => (
+  <ul className="app-list">
+    <li>
+      <Link to="/apps/1">Application1</Link>：<Link to="/apps/1/detail">Detail</Link>
+    </li>
+    <li>
+      <Link to="/apps/2">Application2</Link>：<Link to="/apps/2/detail">Detail</Link>
+    </li>
+  </ul>
+);
 
-const Home = React.createClass({
-  render() {
-    return (<div>
-      <div className="demo-nav">
-        <Link to="/">首页</Link>
-        <Link to="/apps">应用列表</Link>
-      </div>
-      {this.props.children || 'Home'}
-      <div style={{
-        marginBottom: 15,
-        marginTop: 15,
-        paddingBottom: 15,
-        borderBottom: '1px dashed #ccc'
-      }}>点击上面的导航切换页面，面包屑在下面：</div>
-      <Breadcrumb {...this.props} router={ReactRouter} />
-    </div>);
-  }
-});
+const Home = ({ routes, params, children }) => (
+  <div>
+    <div className="demo-nav">
+      <Link to="/">Home</Link>
+      <Link to="/apps">Application List</Link>
+    </div>
+    {children || 'Home Page'}
+    <Alert style={{ margin: '16px 0' }} message="Click the navigation above to switch:" />
+    <Breadcrumb routes={routes} params={params} />
+  </div>
+);
 
-ReactDOM.render((
-  <Router>
-    <Route name="home" breadcrumbName="首页" path="/" component={Home} ignoreScrollBehavior>
-      <Route name="apps" breadcrumbName="应用列表" path="apps" component={Apps}>
-        <Route name="app" breadcrumbName="应用:id" path=":id" />
+ReactDOM.render(
+  <Router history={hashHistory}>
+    <Route name="home" breadcrumbName="Home" path="/" component={Home}>
+      <Route name="apps" breadcrumbName="Application List" path="apps" component={Apps}>
+        <Route name="app" breadcrumbName="Application:id" path=":id">
+          <Route name="detail" breadcrumbName="Detail" path="detail" />
+        </Route>
       </Route>
     </Route>
   </Router>
-), document.getElementById('components-breadcrumb-demo-router'));
+, mountNode);
 ````
 
-<style>
+````css
+#components-breadcrumb-demo-router iframe {
+  height: 180px;
+}
 .demo-nav {
   height: 30px;
   line-height: 30px;
@@ -64,4 +71,4 @@ ReactDOM.render((
 .app-list {
   margin-top: 15px;
 }
-</style>
+````

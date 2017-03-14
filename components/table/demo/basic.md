@@ -1,58 +1,66 @@
-# 基本用法
+---
+order: 0
+title:
+  en-US: Basic Usage
+  zh-CN: 基本用法
+---
 
-- order: 0
+## zh-CN
 
 简单的表格，最后一列是各种操作。
 
----
+## en-US
+
+Simple table with actions.
 
 ````jsx
 import { Table, Icon } from 'antd';
 
 const columns = [{
-  title: '姓名',
+  title: 'Name',
   dataIndex: 'name',
-  render: function(text) {
-    return <a href="#">{text}</a>;
-  }
+  key: 'name',
+  render: text => <a href="#">{text}</a>,
 }, {
-  title: '年龄',
-  dataIndex: 'age'
+  title: 'Age',
+  dataIndex: 'age',
+  key: 'age',
 }, {
-  title: '住址',
-  dataIndex: 'address'
+  title: 'Address',
+  dataIndex: 'address',
+  key: 'address',
 }, {
-  title: '操作',
-  dataIndex: '',
-  render: function(text, record) {
-    return <span>
-      <a href="#">操作一</a>
-      <span className="ant-divider"></span>
-      <a href="#">操作二</a>
-      <span className="ant-divider"></span>
+  title: 'Action',
+  key: 'action',
+  render: (text, record) => (
+    <span>
+      <a href="#">Action 一 {record.name}</a>
+      <span className="ant-divider" />
+      <a href="#">Delete</a>
+      <span className="ant-divider" />
       <a href="#" className="ant-dropdown-link">
-        更多 <Icon type="down" />
+        More actions <Icon type="down" />
       </a>
-    </span>;
-  }
-}];
-const data = [{
-  key: '1',
-  name: '胡彦斌',
-  age: 32,
-  address: '西湖区湖底公园1号'
-}, {
-  key: '2',
-  name: '胡彦祖',
-  age: 42,
-  address: '西湖区湖底公园1号'
-}, {
-  key: '3',
-  name: '李大嘴',
-  age: 32,
-  address: '西湖区湖底公园1号'
+    </span>
+  ),
 }];
 
-ReactDOM.render(<Table columns={columns} dataSource={data} />
-, document.getElementById('components-table-demo-basic'));
+const data = [{
+  key: '1',
+  name: 'John Brown',
+  age: 32,
+  address: 'New York No. 1 Lake Park',
+}, {
+  key: '2',
+  name: 'Jim Green',
+  age: 42,
+  address: 'London No. 1 Lake Park',
+}, {
+  key: '3',
+  name: 'Joe Black',
+  age: 32,
+  address: 'Sidney No. 1 Lake Park',
+}];
+
+ReactDOM.render(<Table columns={columns} dataSource={data} />, mountNode);
 ````

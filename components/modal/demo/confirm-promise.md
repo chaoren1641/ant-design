@@ -1,30 +1,39 @@
-# 确认对话框
+---
+order: 5
+title:
+  zh-CN: 确认对话框
+  en-US: Confirmation modal dialog
+---
 
-- order: 5
+## zh-CN
 
 使用 `confirm()` 可以快捷地弹出确认框。onCancel/onOk 返回 promise 可以延迟关闭
 
----
+## en-US
+
+To use `confirm()` to popup confirmation modal dialog. Let onCancel/onOk function return a promise object to
+delay closing the dialog.
 
 ````jsx
 import { Modal, Button } from 'antd';
 const confirm = Modal.confirm;
 
-function showConfirm(){
+function showConfirm() {
   confirm({
-    title: '您是否确认要删除这项内容',
-    content: '点确认 1 秒后关闭',
-    onOk: function() {
-      return new Promise(function(resolve) {
-        setTimeout(resolve, 1000);
-      });
+    title: 'Want to delete these items?',
+    content: 'When clicked the OK button, this dialog will be closed after 1 second',
+    onOk() {
+      return new Promise((resolve, reject) => {
+        setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+      }).catch(() => console.log('Oops errors!'));
     },
-    onCancel: function() {}
+    onCancel() {},
   });
 }
 
 ReactDOM.render(
-<Button onClick={showConfirm}>
-  确认对话框
-</Button>, document.getElementById('components-modal-demo-confirm-promise'));
+  <Button onClick={showConfirm}>
+    Confirmation modal dialog
+  </Button>
+, mountNode);
 ````

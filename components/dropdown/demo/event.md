@@ -1,28 +1,37 @@
-# 触发事件
+---
+order: 4
+title:
+  zh-CN: 触发事件
+  en-US: Click event
+---
 
-- order: 3
+## zh-CN
 
 点击菜单项后会触发事件，用户可以通过相应的菜单项 key 进行不同的操作。
 
----
+## en-US
+
+An event will be triggered when you click menu items, in which you can make different operations according to item's key.
 
 ````jsx
-import { Menu, Dropdown, Button, Icon } from 'antd';
-const onClick = function({key}) {
-  console.log('点击了菜单' + key);
+import { Menu, Dropdown, Icon, message } from 'antd';
+const onClick = function ({ key }) {
+  message.info(`Click on item ${key}`);
 };
 
-const menu = <Menu onClick={onClick}>
-  <Menu.Item key="1">第一个菜单项</Menu.Item>
-  <Menu.Item key="2">第二个菜单项</Menu.Item>
-  <Menu.Item key="3">第三个菜单项</Menu.Item>
-</Menu>;
+const menu = (
+  <Menu onClick={onClick}>
+    <Menu.Item key="1">1st menu item</Menu.Item>
+    <Menu.Item key="2">2nd memu item</Menu.Item>
+    <Menu.Item key="3">3d menu item</Menu.Item>
+  </Menu>
+);
 
 ReactDOM.render(
   <Dropdown overlay={menu}>
-    <Button>
-      鼠标移入，点击菜单 <Icon type="down" />
-    </Button>
+    <a className="ant-dropdown-link" href="#">
+      Hover me, Click menu item <Icon type="down" />
+    </a>
   </Dropdown>
-, document.getElementById('components-dropdown-demo-event'));
+, mountNode);
 ````

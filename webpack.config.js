@@ -1,48 +1,40 @@
-var webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var path = require('path');
-var pkg = require('./package');
+// This config is for building dist files
+const webpack = require('webpack');
+const getWebpackConfig = require('antd-tools/lib/getWebpackConfig');
 
-var entry = {};
-entry['index'] = './scripts/importCss.js';
-entry['demo'] = './scripts/demo.js';
+// noParse still leave `require('./locale' + name)` in dist files
+// ignore is better
+// http://stackoverflow.com/q/25384360
+function ignoreMomentLocale(webpackConfig) {
+  delete webpackConfig.module.noParse;
+  webpackConfig.plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/));
+}
 
-module.exports = {
-  entry: entry,
+// Fix ie8 compatibility
+function es3ify(webpackConfig) {
+  webpackConfig.module.loaders.unshift({
+    test: /\.(tsx|jsx?)$/,
+    loader: 'es3ify-loader',
+  });
+}
 
-  resolve: {
-    extensions: ['', '.js', '.jsx']
-  },
+function addLocales(webpackConfig) {
+  let packageName = 'antd-with-locales';
+  if (webpackConfig.entry['antd.min']) {
+    packageName += '.min';
+  }
+  webpackConfig.entry[packageName] = './index-with-locales.js';
+  webpackConfig.output.filename = '[name].js';
+}
 
-  output: {
-    path: path.join(process.cwd(), 'dist'),
-    filename: '[name].js'
-  },
-
-  module: {
-    loaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel'
-    }, {
-      test: /\.json$/,
-      loader: 'json-loader'
-    }, {
-      test: /\.less$/,
-      loader: ExtractTextPlugin.extract(
-        'css?sourceMap&-minimize!' + 'autoprefixer-loader!' + 'less?sourceMap'
-      )
-    }, {
-      test: /\.css$/,
-      loader: ExtractTextPlugin.extract(
-        'css?sourceMap&-minimize!' + 'autoprefixer-loader'
-      )
-    }]
-  },
-
-  plugins: [
-    new ExtractTextPlugin('[name].css')
-  ],
-
-  devtool: 'source-map'
+module.exports = function (webpackConfig) {
+  webpackConfig = getWebpackConfig(webpackConfig);
+  if (process.env.RUN_ENV === 'PRODUCTION') {
+    webpackConfig.forEach((config) => {
+      es3ify(config);
+      ignoreMomentLocale(config);
+      addLocales(config);
+    });
+  }
+  return webpackConfig;
 };

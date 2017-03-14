@@ -1,29 +1,31 @@
-# 按钮类型
-
-- order: 0
-
-按钮有三种类型：主按钮、次按钮、幽灵按钮。
-
-通过设置 `type` 为 `primary` `ghost` 可分别创建主按钮、幽灵按钮，若不设置 `type` 值则为次按钮。不同的样式可以用来区别其重要程度。
-
-主按钮和次按钮可独立使用，需要强引导用主按钮。幽灵按钮用于和主按钮组合。
-
 ---
+order: 0
+title:
+  zh-CN: 按钮类型
+  en-US: Type
+---
+
+## zh-CN
+
+按钮有四种类型：主按钮、次按钮、虚线按钮、危险按钮。主按钮在同一个操作区域最多出现一次。
+
+> `danger` 在 `antd@2.7` 后支持。
+
+## en-US
+
+There are `primary` button, `default` button, `dashed` button and `danger` button in antd.
+
+> `danger` is supported after `antd@2.7`.
 
 ````jsx
 import { Button } from 'antd';
 
-ReactDOM.render(<div>
-  <Button type="primary">主按钮</Button>
-  <Button>次按钮</Button>
-  <Button type="ghost">幽灵按钮</Button>
-</div>,
-document.getElementById('components-button-demo-basic'));
+ReactDOM.render(
+  <div>
+    <Button type="primary">Primary</Button>
+    <Button>Default</Button>
+    <Button type="dashed">Dashed</Button>
+    <Button type="danger">Danger</Button>
+  </div>
+, mountNode);
 ````
-
-<style>
-#components-button-demo-basic .ant-btn {
-  margin-right: 8px;
-  margin-bottom: 12px;
-}
-</style>

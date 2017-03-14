@@ -1,15 +1,36 @@
-# 迷你
+---
+order: 4
+title:
+  zh-CN: 迷你
+  en-US: Mini size
+---
 
-- order: 4
+## zh-CN
 
 迷你版本。
 
----
+## en-US
+
+Mini size pagination.
 
 ````jsx
 import { Pagination } from 'antd';
 
+function showTotal(total) {
+  return `Total ${total} items`;
+}
+
 ReactDOM.render(
-  <Pagination size="small" defaultCurrent={2} total={50} />,
- document.getElementById('components-pagination-demo-mini'));
+  <div>
+    <Pagination size="small" total={50} />
+    <Pagination size="small" total={50} showSizeChanger showQuickJumper />
+    <Pagination size="small" total={50} showTotal={showTotal} />
+  </div>
+, mountNode);
 ````
+
+<style>
+#components-pagination-demo-mini .ant-pagination:not(:last-child) {
+  margin-bottom: 24px;
+}
+</style>

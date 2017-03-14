@@ -1,118 +1,105 @@
-# 动态加载数据
-
-- order: 7
-
-远程读取的表格是**更为常见的模式**，下面的表格使用了 `dataSource` 对象和远程数据源绑定和适配，并具有筛选、排序等功能以及页面 loading 效果。
-
-**注意，此示例是静态数据模拟，数据并不准确，请打开网络面板查看请求。**
-
+---
+order: 9
+title:
+  en-US: Ajax
+  zh-CN: 远程加载数据
 ---
 
+## zh-CN
+
+这个例子通过简单的 ajax 读取方式，演示了如何从服务端读取并展现数据，具有筛选、排序等功能以及页面 loading 效果。开发者可以自行接入其他数据处理方式。
+
+另外，本例也展示了筛选排序功能如何交给服务端实现，列不需要指定具体的 `onFilter` 和 `sorter` 函数，而是在把筛选和排序的参数发到服务端来处理。
+
+**注意，此示例使用 [模拟接口](https://randomuser.me)，展示数据可能不准确，请打开网络面板查看请求。**
+
+## en-US
+
+This example shows how to fetch and present data from remote server, and how to implement filtering and sorting in server side by sending related parameters to server.
+
+**Note, this example use [Mock API](https://randomuser.me) that you can look up in Network Console.**
+
 ````jsx
-import { Table, Button } from 'antd';
+import { Table } from 'antd';
+import reqwest from 'reqwest';
 
 const columns = [{
-  title: '姓名',
+  title: 'Name',
   dataIndex: 'name',
-  filters: [{
-    text: '姓李的',
-    value: '李'
-  }, {
-    text: '姓胡的',
-    value: '胡'
-  }]
+  sorter: true,
+  render: name => `${name.first} ${name.last}`,
+  width: '20%',
 }, {
-  title: '年龄',
-  dataIndex: 'age',
-  sorter: true
+  title: 'Gender',
+  dataIndex: 'gender',
+  filters: [
+    { text: 'Male', value: 'male' },
+    { text: 'Female', value: 'female' },
+  ],
+  width: '20%',
 }, {
-  title: '住址',
-  dataIndex: 'address'
+  title: 'Email',
+  dataIndex: 'email',
 }];
 
-const dataSource = new Table.DataSource({
-  url: '/components/table/demo/data.json',
-  resolve: function(result) {
-    return result.data;
-  },
-  data: {},
-  // 和后台接口返回的分页数据进行适配
-  getPagination: function(result) {
-    return {
-      total: result.totalCount,
-      pageSize: result.pageSize
-    };
-  },
-  // 和后台接口接收的参数进行适配
-  // 参数里提供了分页、筛选、排序的信息
-  getParams: function(pagination, filters, sorter) {
-    console.log('getParams 的参数是：', pagination, filters, sorter);
-    const params = {
-      pageSize: pagination.pageSize,
-      currentPage: pagination.current,
+class App extends React.Component {
+  state = {
+    data: [],
+    pagination: {},
+    loading: false,
+  };
+  handleTableChange = (pagination, filters, sorter) => {
+    const pager = this.state.pagination;
+    pager.current = pagination.current;
+    this.setState({
+      pagination: pager,
+    });
+    this.fetch({
+      results: pagination.pageSize,
+      page: pagination.current,
       sortField: sorter.field,
-      sortOrder: sorter.order
-    };
-    for (let key in filters) {
-      params[key] = filters[key];
-    }
-    console.log('请求参数：', params);
-    return params;
+      sortOrder: sorter.order,
+      ...filters,
+    });
   }
-});
-
-const Test = React.createClass({
-  getInitialState() {
-    return {
-      dataSource: null,
-      pagination: {
-        onChange: this.hanlePageChange
-      }
-    };
-  },
-  hanlePageChange(page) {
-    // 使用受控属性 current，方便外部设置页数
-    const pagination = this.state.pagination;
-    pagination.current = page;
-    this.setState({
-      pagination,
-      dataSource: dataSource.clone(),
+  fetch = (params = {}) => {
+    console.log('params:', params);
+    this.setState({ loading: true });
+    reqwest({
+      url: 'https://randomuser.me/api',
+      method: 'get',
+      data: {
+        results: 10,
+        ...params,
+      },
+      type: 'json',
+    }).then((data) => {
+      const pagination = this.state.pagination;
+      // Read total count from server
+      // pagination.total = data.totalCount;
+      pagination.total = 200;
+      this.setState({
+        loading: false,
+        data: data.results,
+        pagination,
+      });
     });
-  },
-  refresh() {
-    // 回到第一页
-    const pagination = this.state.pagination;
-    pagination.current = 1;
-    this.setState({
-      pagination,
-      dataSource: dataSource.clone(),
-    });
-  },
-  changeAndRefresh() {
-    // 回到第一页
-    const pagination = this.state.pagination;
-    pagination.current = 1;
-    // 可以修改原来的 dataSource 再发请求
-    this.setState({
-      pagination,
-      dataSource: dataSource.clone({
-        data: { city: 'hz' }
-      }),
-    });
-  },
+  }
+  componentDidMount() {
+    this.fetch();
+  }
   render() {
-    return <div>
-      <Table columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} />
-      <Button type="primary" onClick={this.refresh}>
-        加载初始数据
-      </Button>
-      &nbsp;
-      <Button onClick={this.changeAndRefresh}>
-        加载 city=hz 的数据
-      </Button>
-    </div>;
+    return (
+      <Table columns={columns}
+        rowKey={record => record.registered}
+        dataSource={this.state.data}
+        pagination={this.state.pagination}
+        loading={this.state.loading}
+        onChange={this.handleTableChange}
+      />
+    );
   }
-});
+}
 
-ReactDOM.render(<Test />, document.getElementById('components-table-demo-ajax'));
+ReactDOM.render(<App />, mountNode);
 ````

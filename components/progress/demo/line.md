@@ -1,22 +1,28 @@
-# 进度条
+---
+order: 0
+title:
+  zh-CN: 进度条
+  en-US: Progress bar
+---
 
-- order: 0
+## zh-CN
 
 标准的进度条。
 
----
+## en-US
+
+A standard progress bar.
 
 ````jsx
-import { Progress, Icon } from 'antd';
-const ProgressLine = Progress.Line;
+import { Progress } from 'antd';
 
 ReactDOM.render(
   <div>
-    <ProgressLine percent={30} />
-    <ProgressLine percent={50} status="active" />
-    <ProgressLine percent={70} status="exception" format={<Icon type="exclamation" />} />
-    <ProgressLine percent={100} />
-    <ProgressLine percent={50} showInfo={false} />
+    <Progress percent={30} />
+    <Progress percent={50} status="active" />
+    <Progress percent={70} status="exception" />
+    <Progress percent={100} />
+    <Progress percent={50} showInfo={false} />
   </div>
-, document.getElementById('components-progress-demo-line'));
+, mountNode);
 ````
