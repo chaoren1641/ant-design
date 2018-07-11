@@ -29,16 +29,9 @@ title: 介绍
 我们采用 [React](http://facebook.github.io/react/) 封装了一套 Ant Design 的组件库，也欢迎社区其他框架的实现版本。
 
 - [Ant Design of React](/docs/react/introduce)（官方实现）
-<<<<<<< HEAD
-- <div class="outside-link internal"><a href="http://zorro.alibaba.net" target="_blank">Ant Design of Angular 2</a></div>
-- <div class="outside-link"><a href="https://github.com/iview/iview/" target="_blank">iView (vue)</a></div>
-- <div class="outside-link"><a href="https://github.com/FE-Driver/vue-beauty" target="_blank">vue-beauty</a></div>
-- <div class="outside-link"><a href="https://github.com/aliqin/atui" target="_blank">ATUI (vue)</a></div>
-=======
 - <div class="outside-link"><a href="http://ng.ant.design" target="_blank">NG-ZORRO - Ant Design of Angular</a></div>
 - <div class="outside-link"><a href="https://github.com/FE-Driver/vue-beauty" target="_blank">vue-beauty (vue)</a></div>
 - <div class="outside-link"><a href="https://github.com/priornix/antizer" target="_blank">antizer (ClojureScript)</a></div>
->>>>>>> e47b82d22a12faa37dd3808aacf5e939310e1e4b
 - <div class="outside-link"><a href="https://github.com/idcos/antd-ember" target="_blank">antd-ember</a></div>
 - <div class="outside-link"><a href="https://github.com/zzuu666/antue" target="_blank">antue (vue)</a></div>
 - <div class="outside-link"><a href="https://github.com/vueComponent/ant-design" target="_blank">vue-antd-ui - Ant Design of Vue.js 2.5.0+</a></div>
