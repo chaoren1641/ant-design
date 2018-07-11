@@ -1,281 +1,242 @@
-exports[`test renders ./components/tag/demo/basic.md correctly 1`] = `
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders ./components/tag/demo/basic.md correctly 1`] = `
 <div>
   <div
     class="ant-tag"
-    data-show="true">
-    <span
-      class="ant-tag-text">
-      Tag 1
-    </span>
+    data-show="true"
+  >
+    Tag 1
   </div>
   <div
     class="ant-tag"
-    data-show="true">
-    <span
-      class="ant-tag-text">
-      <a
-        href="https://github.com/ant-design/ant-design/issues/1862">
-        Link
-      </a>
-    </span>
+    data-show="true"
+  >
+    <a
+      href="https://github.com/ant-design/ant-design/issues/1862"
+    >
+      Link
+    </a>
   </div>
   <div
     class="ant-tag"
-    data-show="true">
-    <span
-      class="ant-tag-text">
-      Tag 2
-    </span>
+    data-show="true"
+  >
+    Tag 2
     <i
-      class="anticon anticon-cross" />
+      class="anticon anticon-cross"
+    />
   </div>
   <div
     class="ant-tag"
-    data-show="true">
-    <span
-      class="ant-tag-text">
-      Prevent Default
-    </span>
+    data-show="true"
+  >
+    Prevent Default
     <i
-      class="anticon anticon-cross" />
+      class="anticon anticon-cross"
+    />
   </div>
 </div>
 `;
 
-exports[`test renders ./components/tag/demo/checkable.md correctly 1`] = `
+exports[`renders ./components/tag/demo/checkable.md correctly 1`] = `
 <div>
   <div
-    class="ant-tag ant-tag-checkable">
-    Unchecked
+    class="ant-tag ant-tag-checkable ant-tag-checkable-checked"
+  >
+    Tag1
   </div>
   <div
-    class="ant-tag ant-tag-checkable ant-tag-checkable-checked">
-    Checked
+    class="ant-tag ant-tag-checkable ant-tag-checkable-checked"
+  >
+    Tag2
   </div>
   <div
-    class="ant-tag ant-tag-checkable">
-    Uncontrolled
+    class="ant-tag ant-tag-checkable ant-tag-checkable-checked"
+  >
+    Tag3
   </div>
 </div>
 `;
 
-exports[`test renders ./components/tag/demo/colorful.md correctly 1`] = `
+exports[`renders ./components/tag/demo/colorful.md correctly 1`] = `
 <div>
+  <h4
+    style="margin-bottom:16px"
+  >
+    Presets:
+  </h4>
   <div>
     <div
-      class="ant-tag ant-tag-pink"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        pink
-      </span>
+      class="ant-tag ant-tag-magenta"
+      data-show="true"
+    >
+      magenta
     </div>
     <div
       class="ant-tag ant-tag-red"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        red
-      </span>
+      data-show="true"
+    >
+      red
+    </div>
+    <div
+      class="ant-tag ant-tag-volcano"
+      data-show="true"
+    >
+      volcano
     </div>
     <div
       class="ant-tag ant-tag-orange"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        orange
-      </span>
+      data-show="true"
+    >
+      orange
+    </div>
+    <div
+      class="ant-tag ant-tag-gold"
+      data-show="true"
+    >
+      gold
+    </div>
+    <div
+      class="ant-tag ant-tag-lime"
+      data-show="true"
+    >
+      lime
     </div>
     <div
       class="ant-tag ant-tag-green"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        green
-      </span>
+      data-show="true"
+    >
+      green
     </div>
     <div
       class="ant-tag ant-tag-cyan"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        cyan
-      </span>
+      data-show="true"
+    >
+      cyan
     </div>
     <div
       class="ant-tag ant-tag-blue"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        blue
-      </span>
+      data-show="true"
+    >
+      blue
+    </div>
+    <div
+      class="ant-tag ant-tag-geekblue"
+      data-show="true"
+    >
+      geekblue
     </div>
     <div
       class="ant-tag ant-tag-purple"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        purple
-      </span>
+      data-show="true"
+    >
+      purple
     </div>
   </div>
-  <div
-    style="margin-top:24px;">
-    <div
-      class="ant-tag ant-tag-pink-inverse"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        pink-inverse
-      </span>
-    </div>
-    <div
-      class="ant-tag ant-tag-red-inverse"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        red-inverse
-      </span>
-    </div>
-    <div
-      class="ant-tag ant-tag-orange-inverse"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        orange-inverse
-      </span>
-    </div>
-    <div
-      class="ant-tag ant-tag-green-inverse"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        green-inverse
-      </span>
-    </div>
-    <div
-      class="ant-tag ant-tag-cyan-inverse"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        cyan-inverse
-      </span>
-    </div>
-    <div
-      class="ant-tag ant-tag-blue-inverse"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        blue-inverse
-      </span>
-    </div>
-    <div
-      class="ant-tag ant-tag-purple-inverse"
-      data-show="true">
-      <span
-        class="ant-tag-text">
-        purple-inverse
-      </span>
-    </div>
-  </div>
-  <div
-    style="margin-top:24px;">
+  <h4
+    style="margin:16px 0"
+  >
+    Custom:
+  </h4>
+  <div>
     <div
       class="ant-tag ant-tag-has-color"
       data-show="true"
-      style="background-color:#f50;">
-      <span
-        class="ant-tag-text">
-        #f50
-      </span>
+      style="background-color:#f50"
+    >
+      #f50
     </div>
     <div
       class="ant-tag ant-tag-has-color"
       data-show="true"
-      style="background-color:#2db7f5;">
-      <span
-        class="ant-tag-text">
-        #2db7f5
-      </span>
+      style="background-color:#2db7f5"
+    >
+      #2db7f5
     </div>
     <div
       class="ant-tag ant-tag-has-color"
       data-show="true"
-      style="background-color:#87d068;">
-      <span
-        class="ant-tag-text">
-        #87d068
-      </span>
+      style="background-color:#87d068"
+    >
+      #87d068
     </div>
     <div
       class="ant-tag ant-tag-has-color"
       data-show="true"
-      style="background-color:#108ee9;">
-      <span
-        class="ant-tag-text">
-        #108ee9
-      </span>
+      style="background-color:#108ee9"
+    >
+      #108ee9
     </div>
   </div>
 </div>
 `;
 
-exports[`test renders ./components/tag/demo/control.md correctly 1`] = `
+exports[`renders ./components/tag/demo/control.md correctly 1`] = `
 <div>
   <div
     class="ant-tag"
-    data-show="true">
-    <span
-      class="ant-tag-text">
-      Unremovable
-    </span>
+    data-show="true"
+  >
+    Unremovable
   </div>
   <div
     class="ant-tag"
-    data-show="true">
-    <span
-      class="ant-tag-text">
-      Tag 2
-    </span>
+    data-show="true"
+  >
+    Tag 2
     <i
-      class="anticon anticon-cross" />
+      class="anticon anticon-cross"
+    />
   </div>
   <div
     class="ant-tag"
-    data-show="true">
-    <span
-      class="ant-tag-text">
-      Tag 3
-    </span>
+    data-show="true"
+  >
+    Tag 3
     <i
-      class="anticon anticon-cross" />
+      class="anticon anticon-cross"
+    />
   </div>
-  <button
-    class="ant-btn ant-btn-dashed ant-btn-sm"
-    type="button">
-    <span>
-      + New Tag
-    </span>
-  </button>
+  <div
+    class="ant-tag"
+    data-show="true"
+    style="background:#fff;border-style:dashed"
+  >
+    <i
+      class="anticon anticon-plus"
+    />
+     New Tag
+  </div>
 </div>
 `;
 
-exports[`test renders ./components/tag/demo/hot-tags.md correctly 1`] = `
+exports[`renders ./components/tag/demo/hot-tags.md correctly 1`] = `
 <div>
-  <strong>
-    Hots: 
-  </strong>
+  <h6
+    style="margin-right:8px;display:inline"
+  >
+    Categories:
+  </h6>
   <div
-    class="ant-tag ant-tag-checkable">
-    Movie
+    class="ant-tag ant-tag-checkable"
+  >
+    Movies
   </div>
   <div
-    class="ant-tag ant-tag-checkable">
+    class="ant-tag ant-tag-checkable"
+  >
     Books
   </div>
   <div
-    class="ant-tag ant-tag-checkable">
+    class="ant-tag ant-tag-checkable"
+  >
     Music
+  </div>
+  <div
+    class="ant-tag ant-tag-checkable"
+  >
+    Sports
   </div>
 </div>
 `;

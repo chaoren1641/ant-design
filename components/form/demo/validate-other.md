@@ -1,5 +1,5 @@
 ---
-order: 11
+order: 14
 title:
   zh-CN: 校验其他组件
   en-US: Other Form Controls
@@ -16,8 +16,9 @@ Demostration for validataion configuration for form controls which are not show 
 ````jsx
 import {
   Form, Select, InputNumber, Switch, Radio,
-  Slider, Button, Upload, Icon,
+  Slider, Button, Upload, Icon, Rate,
 } from 'antd';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioButton = Radio.Button;
@@ -32,12 +33,15 @@ class Demo extends React.Component {
       }
     });
   }
+
   normFile = (e) => {
+    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
     return e && e.fileList;
   }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
@@ -48,7 +52,7 @@ class Demo extends React.Component {
       <Form onSubmit={this.handleSubmit}>
         <FormItem
           {...formItemLayout}
-          label="Nation"
+          label="Plain Text"
         >
           <span className="ant-form-text">China</span>
         </FormItem>
@@ -78,7 +82,7 @@ class Demo extends React.Component {
               { required: true, message: 'Please select your favourite colors!', type: 'array' },
             ],
           })(
-            <Select multiple placeholder="Please select favourite colors">
+            <Select mode="multiple" placeholder="Please select favourite colors">
               <Option value="red">Red</Option>
               <Option value="green">Green</Option>
               <Option value="blue">Blue</Option>
@@ -142,6 +146,17 @@ class Demo extends React.Component {
 
         <FormItem
           {...formItemLayout}
+          label="Rate"
+        >
+          {getFieldDecorator('rate', {
+            initialValue: 3.5,
+          })(
+            <Rate />
+          )}
+        </FormItem>
+
+        <FormItem
+          {...formItemLayout}
           label="Upload"
           extra="longgggggggggggggggggggggggggggggggggg"
         >
@@ -149,12 +164,32 @@ class Demo extends React.Component {
             valuePropName: 'fileList',
             getValueFromEvent: this.normFile,
           })(
-            <Upload name="logo" action="/upload.do" listType="picture" onChange={this.handleUpload}>
+            <Upload name="logo" action="/upload.do" listType="picture">
               <Button>
                 <Icon type="upload" /> Click to upload
               </Button>
             </Upload>
           )}
+        </FormItem>
+
+        <FormItem
+          {...formItemLayout}
+          label="Dragger"
+        >
+          <div className="dropbox">
+            {getFieldDecorator('dragger', {
+              valuePropName: 'fileList',
+              getValueFromEvent: this.normFile,
+            })(
+              <Upload.Dragger name="files" action="/upload.do">
+                <p className="ant-upload-drag-icon">
+                  <Icon type="inbox" />
+                </p>
+                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                <p className="ant-upload-hint">Support for a single or bulk upload.</p>
+              </Upload.Dragger>
+            )}
+          </div>
         </FormItem>
 
         <FormItem
@@ -170,4 +205,11 @@ class Demo extends React.Component {
 const WrappedDemo = Form.create()(Demo);
 
 ReactDOM.render(<WrappedDemo />, mountNode);
+````
+
+````css
+#components-form-demo-validate-other .dropbox {
+  height: 180px;
+  line-height: 1.5;
+}
 ````

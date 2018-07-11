@@ -1,21 +1,28 @@
 import React from 'react';
 import { mount, render } from 'enzyme';
-import { renderToJson } from 'enzyme-to-json';
 import Breadcrumb from '../index';
 
 describe('Breadcrumb', () => {
+  const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+  afterEach(() => {
+    errorSpy.mockReset();
+  });
+
+  afterAll(() => {
+    errorSpy.mockRestore();
+  });
+
+  // https://github.com/airbnb/enzyme/issues/875
   it('warns on non-Breadcrumb.Item children', () => {
     const MyCom = () => <div>foo</div>;
-    spyOn(console, 'error');
     mount(
       <Breadcrumb>
         <MyCom />
       </Breadcrumb>
     );
-    // eslint-disable-next-line
-    expect(console.error.calls.count()).toBe(1);
-    // eslint-disable-next-line
-    expect(console.error.calls.argsFor(0)[0]).toContain(
+    expect(errorSpy.mock.calls).toHaveLength(1);
+    expect(errorSpy.mock.calls[0][0]).toMatch(
       'Breadcrumb only accepts Breadcrumb.Item as it\'s children'
     );
   });
@@ -29,8 +36,19 @@ describe('Breadcrumb', () => {
         {undefined}
       </Breadcrumb>
     );
-    // eslint-disable-next-line
-    expect(console.error.calls).toBe(undefined);
-    expect(renderToJson(wrapper)).toMatchSnapshot();
+    expect(errorSpy).not.toHaveBeenCalled();
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  // https://github.com/ant-design/ant-design/issues/5542
+  it('should not display Breadcrumb Item when its children is falsy', () => {
+    const wrapper = render(
+      <Breadcrumb>
+        <Breadcrumb.Item />
+        <Breadcrumb.Item>xxx</Breadcrumb.Item>
+        <Breadcrumb.Item>yyy</Breadcrumb.Item>
+      </Breadcrumb>
+    );
+    expect(wrapper).toMatchSnapshot();
   });
 });

@@ -7,11 +7,11 @@ title:
 
 ## zh-CN
 
-默认有全选和反选，通过 `rowSelection.selections` 自定义选择项。
+通过 `rowSelection.selections` 自定义选择项，默认不显示下拉选项，设为 `true` 时显示默认选择项。
 
 ## en-US
 
-Default selection is select all and select invert, Use `rowSelection.selections` custom selections.
+Use `rowSelection.selections` custom selections, default no select dropdown, show default selections via setting to `true`.
 
 
 ````jsx
@@ -40,18 +40,29 @@ for (let i = 0; i < 46; i++) {
 
 class App extends React.Component {
   state = {
-    selectedRowKeys: [],  // Check here to configure the default column
+    selectedRowKeys: [], // Check here to configure the default column
   };
+
   onSelectChange = (selectedRowKeys) => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   }
+
   render() {
     const { selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
+      hideDefaultSelections: true,
       selections: [{
+        key: 'all-data',
+        text: 'Select All Data',
+        onSelect: () => {
+          this.setState({
+            selectedRowKeys: [...Array(46).keys()], // 0...45
+          });
+        },
+      }, {
         key: 'odd',
         text: 'Select Odd Row',
         onSelect: (changableRowKeys) => {

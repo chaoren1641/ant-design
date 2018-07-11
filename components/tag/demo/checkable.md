@@ -7,18 +7,24 @@ title:
 
 ## zh-CN
 
-可通过 Tag.CheckableTag 实现类似 Checkbox 的效果，该组件为完全受控组件，不支持非受控用法。
+可通过 `CheckableTag` 实现类似 Checkbox 的效果，点击切换选中效果。
+
+> 该组件为完全受控组件，不支持非受控用法。
 
 ## en-US
 
-Tag.CheckableTag works like Checkbox, and it is an absolute controlled component and has no uncontrolled mode.
+`CheckableTag` works like Checkbox, click it to toggle checked state.
+
+> it is an absolute controlled component and has no uncontrolled mode.
 
 ````jsx
 import { Tag } from 'antd';
-const CheckableTag = Tag.CheckableTag;
 
-class UncontrolledCheckableTag extends React.Component {
-  state = { checked: false };
+const { CheckableTag } = Tag;
+
+class MyTag extends React.Component {
+  state = { checked: true };
+
   handleChange = (checked) => {
     this.setState({ checked });
   }
@@ -30,10 +36,9 @@ class UncontrolledCheckableTag extends React.Component {
 
 ReactDOM.render(
   <div>
-    <CheckableTag>Unchecked</CheckableTag>
-    <CheckableTag checked>Checked</CheckableTag>
-    <UncontrolledCheckableTag>Uncontrolled</UncontrolledCheckableTag>
+    <MyTag>Tag1</MyTag>
+    <MyTag>Tag2</MyTag>
+    <MyTag>Tag3</MyTag>
   </div>,
-  mountNode
-);
+  mountNode);
 ````

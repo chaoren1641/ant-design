@@ -1,39 +1,69 @@
-import React from 'react';
+import * as React from 'react';
 import classNames from 'classnames';
-import TimelineItem from './TimelineItem';
+import TimelineItem, { TimeLineItemProps } from './TimelineItem';
+import Icon from '../icon';
 
 export interface TimelineProps {
   prefixCls?: string;
   className?: string;
   /** 指定最后一个幽灵节点是否存在或内容 */
   pending?: React.ReactNode;
+  pendingDot?: React.ReactNode;
   style?: React.CSSProperties;
+  reverse?: boolean;
 }
 
 export default class Timeline extends React.Component<TimelineProps, any> {
-  static Item: React.ReactNode;
+  static Item = TimelineItem as React.ClassicComponentClass<TimeLineItemProps>;
   static defaultProps = {
     prefixCls: 'ant-timeline',
+    reverse: false,
   };
 
   render() {
-    const { prefixCls, children, pending, className, ...restProps } = this.props;
+    const {
+      prefixCls,
+      pending = null, pendingDot,
+      children, className, reverse,
+      ...restProps
+    } = this.props;
     const pendingNode = typeof pending === 'boolean' ? null : pending;
     const classString = classNames(prefixCls, {
       [`${prefixCls}-pending`]: !!pending,
+      [`${prefixCls}-reverse`]: !!reverse,
     }, className);
-    const items = React.Children.map(children, (ele: React.ReactElement<any>, idx) =>
-      React.cloneElement(ele, {
-        last: idx === (children as { length: number }).length - 1,
-      })
-    );
-    const pendingItem = (!!pending) ? (
-      <TimelineItem pending={!!pending}>{pendingNode}</TimelineItem>
+
+    const pendingItem = !!pending ? (
+      <TimelineItem
+        pending={!!pending}
+        dot={pendingDot || <Icon type="loading" />}
+      >
+        {pendingNode}
+      </TimelineItem>
     ) : null;
+
+    const timeLineItems = !!reverse
+      ? [pendingItem, ...React.Children.toArray(children).reverse()]
+      : [...React.Children.toArray(children), pendingItem];
+
+    // Remove falsy items
+    const truthyItems = timeLineItems.filter(item => !!item);
+    const itemsCount = React.Children.count(truthyItems);
+    const lastCls = `${prefixCls}-item-last`;
+    const items = React.Children.map(truthyItems, (ele: React.ReactElement<any>, idx) =>
+      React.cloneElement(ele, {
+        className: classNames([
+          ele.props.className,
+          (!reverse && !!pending)
+            ? (idx === itemsCount - 2) ? lastCls : ''
+            : (idx === itemsCount - 1) ? lastCls : '',
+        ]),
+      }),
+    );
+
     return (
       <ul {...restProps} className={classString}>
         {items}
-        {pendingItem}
       </ul>
     );
   }

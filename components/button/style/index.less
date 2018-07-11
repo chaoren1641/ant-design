@@ -5,15 +5,23 @@
 @btn-prefix-cls: ~"@{ant-prefix}-btn";
 
 // for compatibile
-@btn-ghost-color        : @text-color;
-@btn-ghost-bg           : transparent;
-@btn-ghost-border       : @border-color-base;
+@btn-ghost-color: @text-color;
+@btn-ghost-bg: transparent;
+@btn-ghost-border: @border-color-base;
 
 // Button styles
 // -----------------------------
 .@{btn-prefix-cls} {
+  line-height: @line-height-base;
   .btn;
   .btn-default;
+
+  // Make sure that the target of Button's click event always be `button`
+  // Ref: https://github.com/ant-design/ant-design/issues/7034
+  > i,
+  > span {
+    pointer-events: none;
+  }
 
   &-primary {
     .btn-primary;
@@ -78,15 +86,15 @@
     display: none;
   }
 
+  .@{iconfont-css-prefix} {
+    transition: margin-left .3s @ease-in-out;
+  }
+
   &&-loading:before {
     display: block;
   }
 
-  .@{iconfont-css-prefix} {
-    transition: all .3s @ease-in-out;
-  }
-
-  &&-loading:not(&-circle):not(&-circle-outline) {
+  &&-loading:not(&-circle):not(&-circle-outline):not(&-icon-only) {
     padding-left: 29px;
     pointer-events: none;
     position: relative;
@@ -95,7 +103,7 @@
     }
   }
 
-  &-sm&-loading:not(&-circle):not(&-circle-outline) {
+  &-sm&-loading:not(&-circle):not(&-circle-outline):not(&-icon-only) {
     padding-left: 24px;
     .@{iconfont-css-prefix} {
       margin-left: -17px;
@@ -120,7 +128,7 @@
   // To ensure that a space will be placed between character and `Icon`.
   > .@{iconfont-css-prefix} + span,
   > span + .@{iconfont-css-prefix} {
-    margin-left: 0.5em;
+    margin-left: 8px;
   }
 
   &-clicked:after {
@@ -138,17 +146,30 @@
   }
 
   &-danger&-clicked:after {
-    border-color: @btn-danger-bg;
+    border-color: @btn-danger-color;
   }
 
   &-background-ghost {
-    background: transparent!important;
+    background: transparent !important;
     border-color: #fff;
     color: #fff;
   }
 
   &-background-ghost&-primary {
-    .button-variant-other(@primary-color; transparent; @primary-color);
+    .button-variant-ghost(@btn-primary-bg);
+  }
+
+  &-background-ghost&-danger {
+    .button-variant-ghost(@btn-danger-color);
+  }
+
+  &-two-chinese-chars:first-letter {
+    letter-spacing: .34em;
+  }
+
+  &-two-chinese-chars > * {
+    letter-spacing: .34em;
+    margin-right: -.34em;
   }
 }
 
@@ -160,5 +181,15 @@
     bottom: -6px;
     right: -6px;
     border-width: 6px;
+  }
+}
+
+a.@{btn-prefix-cls} {
+  line-height: @btn-height-base - 2px;
+  &-lg {
+    line-height: @btn-height-lg - 2px;
+  }
+  &-sm {
+    line-height: @btn-height-sm - 2px;
   }
 }

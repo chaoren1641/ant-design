@@ -1,9 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`antd dist files exports modules correctly 1`] = `
 Array [
   "Affix",
   "Anchor",
   "AutoComplete",
   "Alert",
+  "Avatar",
   "BackTop",
   "Badge",
   "Breadcrumb",
@@ -16,12 +19,14 @@ Array [
   "Checkbox",
   "Col",
   "DatePicker",
+  "Divider",
   "Dropdown",
   "Form",
   "Icon",
   "Input",
   "InputNumber",
   "Layout",
+  "List",
   "LocaleProvider",
   "message",
   "Menu",

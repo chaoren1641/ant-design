@@ -1,67 +1,94 @@
-import React from 'react';
-import { PropTypes } from 'react';
+import * as React from 'react';
+import PropTypes from 'prop-types';
 import RcSelect, { Option, OptGroup } from 'rc-select';
 import classNames from 'classnames';
-
-export type SelectValue = string | any[] | { key: string, label: React.ReactNode } |
- Array<{ key: string, label: React.ReactNode }>;
+import LocaleReceiver from '../locale-provider/LocaleReceiver';
+import defaultLocale from '../locale-provider/default';
 
 export interface AbstractSelectProps {
-  size?: 'default' | 'large' | 'small';
-  className?: string;
-  notFoundContent?: React.ReactNode | null;
   prefixCls?: string;
+  className?: string;
+  size?: 'default' | 'large' | 'small';
+  notFoundContent?: React.ReactNode | null;
   transitionName?: string;
-  optionLabelProp?: string;
   choiceTransitionName?: string;
   showSearch?: boolean;
   allowClear?: boolean;
   disabled?: boolean;
+  showArrow?: boolean;
   style?: React.CSSProperties;
-  placeholder?: string;
+  tabIndex?: number;
+  placeholder?: string | React.ReactNode;
+  defaultActiveFirstOption?: boolean;
+  dropdownClassName?: string;
+  dropdownStyle?: React.CSSProperties;
+  dropdownMenuStyle?: React.CSSProperties;
+  dropdownMatchSelectWidth?: boolean;
+  onSearch?: (value: string) => any;
+  filterOption?: boolean | ((inputValue: string, option: React.ReactElement<OptionProps>) => any);
 }
+
+export interface LabeledValue {
+  key: string;
+  label: React.ReactNode;
+}
+
+export type SelectValue = string | string[] | number | number[] | LabeledValue | LabeledValue[];
 
 export interface SelectProps extends AbstractSelectProps {
   value?: SelectValue;
   defaultValue?: SelectValue;
-  combobox?: boolean;
-  multiple?: boolean;
-  filterOption?: boolean | ((inputValue: string, option: Object) => any);
-  tags?: boolean;
-  onSelect?: (value: SelectValue, option: Object) => any;
+  mode?: 'default' | 'multiple' | 'tags' | 'combobox';
+  optionLabelProp?: string;
+  firstActiveValue?: string | string[];
+  onChange?: (value: SelectValue, option: React.ReactElement<any> | React.ReactElement<any>[]) => void;
+  onSelect?: (value: SelectValue, option: React.ReactElement<any>) => any;
   onDeselect?: (value: SelectValue) => any;
-  onSearch?: (value: string) => any;
-  dropdownMatchSelectWidth?: boolean;
+  onBlur?: () => any;
+  onFocus?: () => any;
+  onPopupScroll?: () => any;
+  onInputKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  maxTagCount?: number;
+  maxTagPlaceholder?: React.ReactNode | ((omittedValues: SelectValue[]) => React.ReactNode);
   optionFilterProp?: string;
-  defaultActiveFirstOption?: boolean;
   labelInValue?: boolean;
-  getPopupContainer?: (triggerNode: React.ReactNode) => React.ReactNode | HTMLElement;
-  dropdownStyle?: React.CSSProperties;
-  dropdownMenuStyle?: React.CSSProperties;
-  onChange?: (value: SelectValue) => void;
+  getPopupContainer?: (triggerNode: Element) => HTMLElement;
   tokenSeparators?: string[];
   getInputElement?: () => React.ReactElement<any>;
+  autoFocus?: boolean;
 }
 
 export interface OptionProps {
   disabled?: boolean;
-  value?: any;
+  value?: string | number;
+  title?: string;
+  children?: React.ReactNode;
 }
 
 export interface OptGroupProps {
-  label?: string | React.ReactElement<any>;
+  label?: React.ReactNode;
 }
 
-export interface SelectContext {
-  antLocale?: {
-    Select?: any,
-  };
+export interface SelectLocale {
+  notFoundContent?: string;
 }
+
+const SelectPropTypes = {
+  prefixCls: PropTypes.string,
+  className: PropTypes.string,
+  size: PropTypes.oneOf(['default', 'large', 'small']),
+  combobox: PropTypes.bool,
+  notFoundContent: PropTypes.any,
+  showSearch: PropTypes.bool,
+  optionLabelProp: PropTypes.string,
+  transitionName: PropTypes.string,
+  choiceTransitionName: PropTypes.string,
+};
 
 // => It is needless to export the declaration of below two inner components.
 // export { Option, OptGroup };
 
-export default class Select extends React.Component<SelectProps, any> {
+export default class Select extends React.Component<SelectProps, {}> {
   static Option = Option as React.ClassicComponentClass<OptionProps>;
   static OptGroup = OptGroup as React.ClassicComponentClass<OptGroupProps>;
 
@@ -72,54 +99,79 @@ export default class Select extends React.Component<SelectProps, any> {
     choiceTransitionName: 'zoom',
   };
 
-  static propTypes = {
-    prefixCls: PropTypes.string,
-    className: PropTypes.string,
-    size: PropTypes.oneOf(['default', 'large', 'small']),
-    combobox: PropTypes.bool,
-    notFoundContent: PropTypes.any,
-    showSearch: PropTypes.bool,
-    optionLabelProp: PropTypes.string,
-    transitionName: PropTypes.string,
-    choiceTransitionName: PropTypes.string,
-  };
+  static propTypes = SelectPropTypes;
 
-  context: SelectContext;
+  private rcSelect: any;
 
-  render() {
+  focus() {
+    this.rcSelect.focus();
+  }
+
+  blur() {
+    this.rcSelect.blur();
+  }
+
+  saveSelect = (node: any) => {
+    this.rcSelect = node;
+  }
+
+  getNotFoundContent(locale: SelectLocale) {
+    const { notFoundContent, mode } = this.props;
+    const isCombobox = mode === 'combobox';
+    if (isCombobox) {
+      // AutoComplete don't have notFoundContent defaultly
+      return notFoundContent === undefined ? null : notFoundContent;
+    }
+    return notFoundContent === undefined ? locale.notFoundContent : notFoundContent;
+  }
+
+  renderSelect = (locale: SelectLocale) => {
     const {
       prefixCls,
       className = '',
       size,
-      combobox,
+      mode,
+      ...restProps
     } = this.props;
-
-    let { notFoundContent = 'Not Found', optionLabelProp } = this.props;
-
     const cls = classNames({
       [`${prefixCls}-lg`]: size === 'large',
       [`${prefixCls}-sm`]: size === 'small',
     }, className);
 
-    const { antLocale } = this.context;
-    if (antLocale && antLocale.Select) {
-      notFoundContent = ('notFoundContent' in this.props)
-        ? notFoundContent : antLocale.Select.notFoundContent;
-    }
-
-    if (combobox) {
-      notFoundContent = null;
+    let { optionLabelProp } = this.props;
+    const isCombobox = mode === 'combobox';
+    if (isCombobox) {
       // children 带 dom 结构时，无法填入输入框
       optionLabelProp = optionLabelProp || 'value';
     }
 
+    const modeConfig = {
+      multiple: mode === 'multiple',
+      tags: mode === 'tags',
+      combobox: isCombobox,
+    };
+
     return (
       <RcSelect
-        {...this.props}
+        {...restProps}
+        {...modeConfig}
+        prefixCls={prefixCls}
         className={cls}
         optionLabelProp={optionLabelProp || 'children'}
-        notFoundContent={notFoundContent}
+        notFoundContent={this.getNotFoundContent(locale)}
+        ref={this.saveSelect}
       />
+    );
+  }
+
+  render() {
+    return (
+      <LocaleReceiver
+        componentName="Select"
+        defaultLocale={defaultLocale.Select}
+      >
+        {this.renderSelect}
+      </LocaleReceiver>
     );
   }
 }

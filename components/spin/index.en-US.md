@@ -12,9 +12,11 @@ When part of the page is waiting for asynchronous data or during a rendering pro
 
 ## API
 
-| Property      | Type           | Default      | Description         |
-|------------|----------------|-------------|--------------|
-| size       | enum           | default     | Size of dot in spin component, available in `small`, `default` and `large`. |
-| spinning   | boolean        | true        | Use in embedded mode, to modify loading state. |
-| tip    | string        | None        | Customize description content  |
-| delay | number (milliseconds) | None | Specifies a delay for loading state |
+| Property | Description | Type | Default Value |
+| -------- | ----------- | ---- | ------------- |
+| delay | specifies a delay in milliseconds for loading state (prevent flush) | number (milliseconds) | - |
+| indicator | React node of the spinning indicator | ReactElement | - |
+| size | size of Spin, options: `small`, `default` and `large` | string | `default` |
+| spinning | whether Spin is spinning | boolean | true |
+| tip | customize description content when Spin has children | string | - |
+| wrapperClassName | className of wrapper when Spin has children | string | - |
