@@ -1,7 +1,6 @@
 /* eslint no-use-before-define: "off" */
 import React from 'react';
 import { render, mount } from 'enzyme';
-import { renderToJson } from 'enzyme-to-json';
 import Transfer from '..';
 import TransferList from '../list';
 import TransferOperation from '../operation';
@@ -88,7 +87,7 @@ const searchTransferProps = {
 describe('Transfer', () => {
   it('should render correctly', () => {
     const wrapper = render(<Transfer {...listCommonProps} />);
-    expect(renderToJson(wrapper)).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 
   it('should move selected keys to corresponding list', () => {
@@ -164,7 +163,7 @@ describe('Transfer', () => {
     expect(wrapper.find(TransferList).at(0).find('.ant-transfer-list-header-selected > span').at(0)
       .first()
       .text()
-      .trim()).toEqual('1');
+      .trim()).toEqual('1 items');
   });
 
   it('should just check the filtered item when click on check all after search by input', () => {
@@ -212,5 +211,65 @@ describe('Transfer', () => {
       .simulate('change');
     wrapper.find(TransferOperation).find(Button).at(1).simulate('click');
     expect(handleChange).toHaveBeenCalledWith(['1', '3', '4'], 'right', ['1']);
+  });
+
+  it('should check correctly when there is a search text', () => {
+    const newProps = { ...listCommonProps };
+    delete newProps.targetKeys;
+    delete newProps.selectedKeys;
+    const handleSelectChange = jest.fn();
+    const wrapper = mount(
+      <Transfer {...newProps} showSearch onSelectChange={handleSelectChange} render={item => item.title} />
+    );
+    wrapper.find(TransferItem).filterWhere(n => n.prop('item').key === 'b').simulate('click');
+    expect(handleSelectChange).toHaveBeenLastCalledWith(['b'], []);
+    wrapper.find(TransferSearch).at(0).find('input').simulate('change', { target: { value: 'a' } });
+    wrapper.find(TransferList).at(0).find('.ant-transfer-list-header input[type="checkbox"]').simulate('change');
+    expect(handleSelectChange).toHaveBeenLastCalledWith(['b', 'a'], []);
+    wrapper.find(TransferList).at(0).find('.ant-transfer-list-header input[type="checkbox"]').simulate('change');
+    expect(handleSelectChange).toHaveBeenLastCalledWith(['b'], []);
+  });
+
+  it('should show sorted targetkey', () => {
+    const sortedTargetKeyProps = {
+      dataSource: [{
+        key: 'a',
+        title: 'a',
+      }, {
+        key: 'b',
+        title: 'b',
+      }, {
+        key: 'c',
+        title: 'c',
+      }],
+      targetKeys: ['c', 'b'],
+      lazy: false,
+    };
+    const wrapper = render(<Transfer {...sortedTargetKeyProps} render={item => item.title} />);
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('should add custom styles when their props are provided', () => {
+    const style = {
+      backgroundColor: 'red',
+    };
+    const listStyle = {
+      backgroundColor: 'blue',
+    };
+    const operationStyle = {
+      backgroundColor: 'yellow',
+    };
+
+    const component = mount(<Transfer {...listCommonProps} style={style} listStyle={listStyle} operationStyle={operationStyle} />);
+
+    const wrapper = component.find('.ant-transfer');
+    const listSource = component.find('.ant-transfer-list').first();
+    const listTarget = component.find('.ant-transfer-list').last();
+    const operation = component.find('.ant-transfer-operation').first();
+
+    expect(wrapper.prop('style')).toHaveProperty('backgroundColor', 'red');
+    expect(listSource.prop('style')).toHaveProperty('backgroundColor', 'blue');
+    expect(listTarget.prop('style')).toHaveProperty('backgroundColor', 'blue');
+    expect(operation.prop('style')).toHaveProperty('backgroundColor', 'yellow');
   });
 });

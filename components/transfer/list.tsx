@@ -1,49 +1,48 @@
-import React from 'react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import Animate from 'rc-animate';
 import PureRenderMixin from 'rc-util/lib/PureRenderMixin';
-import assign from 'object-assign';
+import Checkbox from '../checkbox';
 import { TransferItem } from './index';
 import Search from './search';
 import Item from './item';
-import Checkbox from '../checkbox';
+import triggerEvent from '../_util/triggerEvent';
+
+function isIEorEDGE() {
+  return (document as any).documentMode || /Edge/.test(navigator.userAgent);
+}
 
 function noop() {
 }
 
-function isRenderResultPlainObject(result) {
+function isRenderResultPlainObject(result: any) {
   return result && !React.isValidElement(result) &&
     Object.prototype.toString.call(result) === '[object Object]';
 }
 
 export interface TransferListProps {
   prefixCls: string;
+  titleText: string;
   dataSource: TransferItem[];
-  filter?: string;
-  showSearch?: boolean;
-  searchPlaceholder?: string;
-  titleText?: string;
+  filter: string;
+  filterOption?: (filterText: any, item: any) => boolean;
   style?: React.CSSProperties;
+  checkedKeys: string[];
   handleFilter: (e: any) => void;
   handleSelect: (selectedItem: any, checked: boolean) => void;
   handleSelectAll: (dataSource: any[], checkAll: boolean) => void;
   handleClear: () => void;
   render?: (item: any) => any;
+  showSearch?: boolean;
+  searchPlaceholder: string;
+  notFoundContent: React.ReactNode;
+  itemUnit: string;
+  itemsUnit: string;
   body?: (props: any) => any;
   footer?: (props: any) => void;
-  checkedKeys: string[];
-  checkStatus?: boolean;
-  position?: string;
-  notFoundContent?: React.ReactNode;
-  filterOption: (filterText: any, item: any) => boolean;
   lazy?: boolean | {};
   onScroll: Function;
-}
-
-export interface TransferListContext {
-  antLocale?: {
-    Transfer?: any,
-  };
 }
 
 export default class TransferList extends React.Component<TransferListProps, any> {
@@ -55,14 +54,12 @@ export default class TransferList extends React.Component<TransferListProps, any
     lazy: {},
   };
 
-  static contextTypes = {
-    antLocale: React.PropTypes.object,
-  };
-
-  context: TransferListContext;
   timer: number;
+  triggerScrollTimer: number;
+  fixIERepaintTimer: number;
+  notFoundNode: HTMLDivElement;
 
-  constructor(props) {
+  constructor(props: TransferListProps) {
     super(props);
     this.state = {
       mounted: false,
@@ -70,7 +67,7 @@ export default class TransferList extends React.Component<TransferListProps, any
   }
 
   componentDidMount() {
-    this.timer = setTimeout(() => {
+    this.timer = window.setTimeout(() => {
       this.setState({
         mounted: true,
       });
@@ -79,13 +76,15 @@ export default class TransferList extends React.Component<TransferListProps, any
 
   componentWillUnmount() {
     clearTimeout(this.timer);
+    clearTimeout(this.triggerScrollTimer);
+    clearTimeout(this.fixIERepaintTimer);
   }
 
-  shouldComponentUpdate(...args) {
+  shouldComponentUpdate(...args: any[]) {
     return PureRenderMixin.shouldComponentUpdate.apply(this, args);
   }
 
-  getCheckStatus(filteredDataSource) {
+  getCheckStatus(filteredDataSource: TransferItem[]) {
     const { checkedKeys } = this.props;
     if (checkedKeys.length === 0) {
       return 'none';
@@ -95,21 +94,35 @@ export default class TransferList extends React.Component<TransferListProps, any
     return 'part';
   }
 
-  handleSelect = (selectedItem) => {
+  handleSelect = (selectedItem: TransferItem) => {
     const { checkedKeys } = this.props;
     const result = checkedKeys.some((key) => key === selectedItem.key);
     this.props.handleSelect(selectedItem, !result);
   }
 
-  handleFilter = (e) => {
+  handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.props.handleFilter(e);
+    if (!e.target.value) {
+      return;
+    }
+    // Manually trigger scroll event for lazy search bug
+    // https://github.com/ant-design/ant-design/issues/5631
+    this.triggerScrollTimer = window.setTimeout(() => {
+      const transferNode = ReactDOM.findDOMNode(this) as Element;
+      const listNode = transferNode.querySelectorAll('.ant-transfer-list-content')[0];
+      if (listNode) {
+        triggerEvent(listNode, 'scroll');
+      }
+    }, 0);
+    this.fixIERepaint();
   }
 
   handleClear = () => {
     this.props.handleClear();
+    this.fixIERepaint();
   }
 
-  matchFilter = (text, item) => {
+  matchFilter = (text: string, item: TransferItem) => {
     const { filter, filterOption } = this.props;
     if (filterOption) {
       return filterOption(filter, item);
@@ -117,7 +130,7 @@ export default class TransferList extends React.Component<TransferListProps, any
     return text.indexOf(filter) >= 0;
   }
 
-  renderItem = (item) => {
+  renderItem = (item: TransferItem) => {
     const { render = noop } = this.props;
     const renderResult = render(item);
     const isRenderResultPlain = isRenderResultPlainObject(renderResult);
@@ -127,18 +140,34 @@ export default class TransferList extends React.Component<TransferListProps, any
     };
   }
 
+  saveNotFoundRef = (node: HTMLDivElement) => {
+    this.notFoundNode = node;
+  }
+
+  // Fix IE/Edge repaint
+  // https://github.com/ant-design/ant-design/issues/9697
+  // https://stackoverflow.com/q/27947912/3040605
+  fixIERepaint() {
+    if (!isIEorEDGE()) {
+      return;
+    }
+    this.fixIERepaintTimer = window.setTimeout(() => {
+      if (this.notFoundNode) {
+        this.notFoundNode.className = this.notFoundNode.className;
+      }
+    }, 0);
+  }
+
   render() {
     const {
       prefixCls, dataSource, titleText, checkedKeys, lazy,
       body = noop, footer = noop, showSearch, style, filter,
-      onScroll,
+      searchPlaceholder, notFoundContent, itemUnit, itemsUnit, onScroll,
     } = this.props;
 
-    let { searchPlaceholder, notFoundContent } = this.props;
-
     // Custom Layout
-    const footerDom = footer(assign({}, this.props));
-    const bodyDom = body(assign({}, this.props));
+    const footerDom = footer({ ...this.props });
+    const bodyDom = body({ ...this.props });
 
     const listCls = classNames(prefixCls, {
       [`${prefixCls}-with-footer`]: !!footerDom,
@@ -175,14 +204,7 @@ export default class TransferList extends React.Component<TransferListProps, any
       );
     });
 
-    let unit = '';
-    const antLocale = this.context.antLocale;
-    if (antLocale && antLocale.Transfer) {
-      const transferLocale = antLocale.Transfer;
-      unit = dataSource.length > 1 ? transferLocale.itemsUnit : transferLocale.itemUnit;
-      searchPlaceholder = searchPlaceholder || transferLocale.searchPlaceholder;
-      notFoundContent = notFoundContent || transferLocale.notFoundContent;
-    }
+    const unit = dataSource.length > 1 ? itemsUnit : itemUnit;
 
     const search = showSearch ? (
       <div className={`${prefixCls}-body-search-wrapper`}>
@@ -190,7 +212,7 @@ export default class TransferList extends React.Component<TransferListProps, any
           prefixCls={`${prefixCls}-search`}
           onChange={this.handleFilter}
           handleClear={this.handleClear}
-          placeholder={searchPlaceholder || 'Search'}
+          placeholder={searchPlaceholder}
           value={filter}
         />
       </div>
@@ -208,8 +230,8 @@ export default class TransferList extends React.Component<TransferListProps, any
         >
           {showItems}
         </Animate>
-        <div className={`${prefixCls}-body-not-found`}>
-          {notFoundContent || 'Not Found'}
+        <div className={`${prefixCls}-body-not-found`} ref={this.saveNotFoundRef}>
+          {notFoundContent}
         </div>
       </div>
     );

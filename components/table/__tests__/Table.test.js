@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, shallow, mount } from 'enzyme';
-import { renderToJson } from 'enzyme-to-json';
 import Table from '..';
 
 const { Column, ColumnGroup } = Table;
@@ -41,7 +40,7 @@ describe('Table', () => {
       </Table>
     );
 
-    expect(renderToJson(wrapper)).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 
   it('updates columns when receiving props', () => {
@@ -68,12 +67,14 @@ describe('Table', () => {
     };
     const wrapper = mount(<Table loading={loading} />);
     expect(wrapper.find('.ant-spin')).toHaveLength(0);
+    expect(wrapper.find('.ant-table-placeholder').text()).not.toEqual('');
 
     loading.spinning = true;
     wrapper.setProps({ loading });
     expect(wrapper.find('.ant-spin')).toHaveLength(0);
 
     await new Promise(resolve => setTimeout(resolve, 500));
+    wrapper.update();
     expect(wrapper.find('.ant-spin')).toHaveLength(1);
   });
 });

@@ -1,6 +1,3 @@
-import moment from 'moment';
-moment.locale('de');
-
 import Pagination from 'rc-pagination/lib/locale/de_DE';
 import DatePicker from '../date-picker/locale/de_DE';
 import TimePicker from '../time-picker/locale/de_DE';
@@ -17,6 +14,8 @@ export default {
     filterConfirm: 'OK',
     filterReset: 'Zurücksetzen',
     emptyText: 'Keine Daten',
+    selectAll: 'Selektiere Alle',
+    selectInvert: 'Selektion Invertieren',
   },
   Modal: {
     okText: 'OK',
@@ -35,5 +34,11 @@ export default {
   },
   Select: {
     notFoundContent: 'Nicht gefunden',
+  },
+  Upload: {
+    uploading: 'Hochladen...',
+    removeFile: 'Datei entfernen',
+    uploadError: 'Fehler beim Hochladen',
+    previewFile: 'Dateivorschau',
   },
 };

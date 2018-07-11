@@ -15,6 +15,7 @@ After `antd@2.0`, the `value` of time-related components had been changed to `mo
 
 ````jsx
 import { Form, DatePicker, TimePicker, Button } from 'antd';
+
 const FormItem = Form.Item;
 const MonthPicker = DatePicker.MonthPicker;
 const RangePicker = DatePicker.RangePicker;
@@ -46,11 +47,18 @@ class TimeRelatedForm extends React.Component {
       console.log('Received values of form: ', values);
     });
   }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
-      labelCol: { span: 8 },
-      wrapperCol: { span: 16 },
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
     };
     const config = {
       rules: [{ type: 'object', required: true, message: 'Please select time!' }],
@@ -109,9 +117,12 @@ class TimeRelatedForm extends React.Component {
           )}
         </FormItem>
         <FormItem
-          wrapperCol={{ span: 16, offset: 8 }}
+          wrapperCol={{
+            xs: { span: 24, offset: 0 },
+            sm: { span: 16, offset: 8 },
+          }}
         >
-          <Button type="primary" htmlType="submit" size="large">Submit</Button>
+          <Button type="primary" htmlType="submit">Submit</Button>
         </FormItem>
       </Form>
     );

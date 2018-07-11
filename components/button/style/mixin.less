@@ -1,9 +1,10 @@
 // mixins for button
 // ------------------------
-.button-size(@padding; @font-size; @border-radius) {
+.button-size(@height; @padding; @font-size; @border-radius) {
   padding: @padding;
   font-size: @font-size;
   border-radius: @border-radius;
+  height: @height;
 }
 
 .button-disabled() {
@@ -50,6 +51,41 @@
   .button-disabled();
 }
 
+.button-variant-danger(@color; @background; @border) {
+  .button-color(@color; @background; @border);
+
+  &:hover {
+    .button-color(@btn-primary-color; ~`colorPalette("@{color}", 5)`; ~`colorPalette("@{color}", 5)`);
+  }
+
+  &:focus {
+    .button-color(~`colorPalette("@{color}", 5)`; #fff; ~`colorPalette("@{color}", 5)`);
+  }
+
+  &:active,
+  &.active {
+    .button-color(@btn-primary-color; ~`colorPalette("@{color}", 7)`; ~`colorPalette("@{color}", 7)`);
+  }
+
+  .button-disabled();
+}
+
+.button-variant-ghost(@color) {
+  .button-color(@color; transparent; @color);
+
+  &:hover,
+  &:focus {
+    .button-color(~`colorPalette("@{color}", 5)`; transparent; ~`colorPalette("@{color}", 5)`);
+  }
+
+  &:active,
+  &.active {
+    .button-color(~`colorPalette("@{color}", 7)`; transparent; ~`colorPalette("@{color}", 7)`);
+  }
+
+  .button-disabled();
+}
+
 .button-color(@color; @background; @border) {
   color: @color;
   background-color: @background;
@@ -75,7 +111,7 @@
   display: inline-block;
   > .@{btnClassName} {
     position: relative;
-    z-index: 1;
+    line-height: @btn-height-base - 2px;
 
     &:hover,
     &:focus,
@@ -91,11 +127,13 @@
 
   // size
   &-lg > .@{btnClassName} {
-    .button-size(@btn-padding-lg; @btn-font-size-lg; @btn-border-radius-base);
+    .button-size(@btn-height-lg; @btn-padding-lg; @btn-font-size-lg; @btn-border-radius-base);
+    line-height: @btn-height-lg - 2px;
   }
 
   &-sm > .@{btnClassName} {
-    .button-size(@btn-padding-sm; @font-size-base; @btn-border-radius-sm);
+    .button-size(@btn-height-sm; @btn-padding-sm; @font-size-base; @btn-border-radius-sm);
+    line-height: @btn-height-sm - 2px;
     > .@{iconfont-css-prefix} {
       font-size: @font-size-base;
     }
@@ -106,7 +144,6 @@
 // --------------------------------------------------
 .btn() {
   display: inline-block;
-  margin-bottom: 0;
   font-weight: @btn-font-weight;
   text-align: center;
   touch-action: manipulation;
@@ -114,8 +151,7 @@
   background-image: none;
   border: @border-width-base @border-style-base transparent;
   white-space: nowrap;
-  line-height: @line-height-base;
-  .button-size(@btn-padding-base; @font-size-base; @btn-border-radius-base);
+  .button-size(@btn-height-base; @btn-padding-base; @font-size-base; @btn-border-radius-base);
   user-select: none;
   transition: all .3s @ease-in-out;
   position: relative;
@@ -148,11 +184,11 @@
   }
 
   &-lg {
-    .button-size(@btn-padding-lg; @btn-font-size-lg; @btn-border-radius-base);
+    .button-size(@btn-height-lg; @btn-padding-lg; @btn-font-size-lg; @btn-border-radius-base);
   }
 
   &-sm {
-    .button-size(@btn-padding-sm; @font-size-base; @btn-border-radius-sm);
+    .button-size(@btn-height-sm; @btn-padding-sm; @btn-font-size-sm; @btn-border-radius-sm);
   }
 }
 
@@ -168,7 +204,8 @@
   &:focus,
   &:active,
   &.active {
-    background: #fff;
+    background: @btn-default-bg;
+    text-decoration: none;
   }
 }
 
@@ -185,22 +222,22 @@
 
 // danger button style
 .btn-danger() {
-  .button-variant-primary(@btn-danger-color, @btn-danger-bg);
+  .button-variant-danger(@btn-danger-color, @btn-danger-bg, @btn-danger-border);
 }
 
 // circle button: the content only contains icon
 .btn-circle(@btnClassName: btn) {
   .square(@btn-circle-size);
-  .button-size(0; @font-size-base + 2; 50%);
+  .button-size(@btn-circle-size; 0; @font-size-base + 2px; 50%);
 
   &.@{btnClassName}-lg {
     .square(@btn-circle-size-lg);
-    .button-size(0; @btn-font-size-lg + 2; 50%);
+    .button-size(@btn-circle-size-lg; 0; @btn-font-size-lg + 2px; 50%);
   }
 
   &.@{btnClassName}-sm {
     .square(@btn-circle-size-sm);
-    .button-size(0; @font-size-base; 50%);
+    .button-size(@btn-circle-size-sm; 0; @font-size-base; 50%);
   }
 }
 
@@ -211,30 +248,37 @@
 
   .@{btnClassName} + .@{btnClassName},
   .@{btnClassName} + &,
+  span + .@{btnClassName},
+  .@{btnClassName} + span,
+  > span + span,
   & + .@{btnClassName},
   & + & {
     margin-left: -1px;
   }
 
+  .@{btnClassName}-primary + .@{btnClassName}:not(.@{btnClassName}-primary):not([disabled]) {
+    border-left-color: transparent;
+  }
+
   .@{btnClassName}:not(:first-child):not(:last-child) {
     border-radius: 0;
-    padding-left: 8px;
-    padding-right: 8px;
   }
 
-  > .@{btnClassName}:first-child {
+  > .@{btnClassName}:first-child,
+  > span:first-child > .@{btnClassName} {
     margin-left: 0;
-    &:not(:last-child) {
-      border-bottom-right-radius: 0;
-      border-top-right-radius: 0;
-      padding-right: 8px;
-    }
   }
 
-  > .@{btnClassName}:last-child:not(:first-child) {
+  > .@{btnClassName}:first-child:not(:last-child),
+  > span:first-child:not(:last-child) > .@{btnClassName} {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  > .@{btnClassName}:last-child:not(:first-child),
+  > span:last-child:not(:first-child) > .@{btnClassName} {
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
-    padding-left: 8px;
   }
 
   & > & {

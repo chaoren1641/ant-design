@@ -1,10 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
 import Icon from '../icon';
 import classNames from 'classnames';
 
-function noop() {}
+function noop() { }
 
 export interface AlertProps {
   /**
@@ -20,9 +20,12 @@ export interface AlertProps {
   /** Additional content of Alert */
   description?: React.ReactNode;
   /** Callback when close Alert */
-  onClose?: React.MouseEventHandler<any>;
+  onClose?: React.MouseEventHandler<HTMLAnchorElement>;
+  /** Trigger when animation ending of Alert */
+  afterClose?: () => void;
   /** Whether to show icon */
   showIcon?: boolean;
+  iconType?: string;
   style?: React.CSSProperties;
   prefixCls?: string;
   className?: string;
@@ -30,17 +33,14 @@ export interface AlertProps {
 }
 
 export default class Alert extends React.Component<AlertProps, any> {
-  static defaultProps = {
-    type: 'info',
-  };
-  constructor(props) {
+  constructor(props: AlertProps) {
     super(props);
     this.state = {
       closing: true,
       closed: false,
     };
   }
-  handleClose = (e) => {
+  handleClose = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     let dom = ReactDOM.findDOMNode(this) as HTMLElement;
     dom.style.height = `${dom.offsetHeight}px`;
@@ -58,39 +58,41 @@ export default class Alert extends React.Component<AlertProps, any> {
       closed: true,
       closing: true,
     });
+    (this.props.afterClose || noop)();
   }
   render() {
     let {
       closable, description, type, prefixCls = 'ant-alert', message, closeText, showIcon, banner,
-      className = '', style,
+      className = '', style, iconType,
     } = this.props;
 
     // banner模式默认有 Icon
-    showIcon = showIcon || banner;
+    showIcon = banner && showIcon === undefined ? true : showIcon;
     // banner模式默认为警告
-    type = banner ? 'warning' : type;
+    type = banner && type === undefined ? 'warning' : type || 'info';
 
-    let iconType = '';
-    switch (type) {
-      case 'success':
-        iconType = 'check-circle';
-        break;
-      case 'info':
-        iconType = 'info-circle';
-        break;
-      case 'error':
-        iconType = 'cross-circle';
-        break;
-      case 'warning':
-        iconType = 'exclamation-circle';
-        break;
-      default:
-        iconType = 'default';
-    }
+    if (!iconType) {
+      switch (type) {
+        case 'success':
+          iconType = 'check-circle';
+          break;
+        case 'info':
+          iconType = 'info-circle';
+          break;
+        case 'error':
+          iconType = 'cross-circle';
+          break;
+        case 'warning':
+          iconType = 'exclamation-circle';
+          break;
+        default:
+          iconType = 'default';
+      }
 
-    // use outline icon in alert with description
-    if (!!description) {
-      iconType += '-o';
+      // use outline icon in alert with description
+      if (!!description) {
+        iconType += '-o';
+      }
     }
 
     let alertCls = classNames(prefixCls, {

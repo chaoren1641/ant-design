@@ -1,13 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import Animate from 'rc-animate';
 import classNames from 'classnames';
 import omit from 'omit.js';
-import assign from 'object-assign';
 import Icon from '../icon';
 import CheckableTag from './CheckableTag';
 
-export interface TagProps {
+export { CheckableTagProps } from './CheckableTag';
+
+export interface TagProps extends React.HTMLAttributes<HTMLDivElement> {
   prefixCls?: string;
   className?: string;
   color?: string;
@@ -20,7 +21,12 @@ export interface TagProps {
   style?: React.CSSProperties;
 }
 
-export default class Tag extends React.Component<TagProps, any> {
+export interface TagState {
+  closing: boolean;
+  closed: boolean;
+}
+
+export default class Tag extends React.Component<TagProps, TagState> {
   static CheckableTag = CheckableTag;
   static defaultProps = {
     prefixCls: 'ant-tag',
@@ -36,7 +42,7 @@ export default class Tag extends React.Component<TagProps, any> {
     };
   }
 
-  close = (e) => {
+  close = (e: React.MouseEvent<HTMLElement>) => {
     const onClose = this.props.onClose;
     if (onClose) {
       onClose(e);
@@ -53,7 +59,7 @@ export default class Tag extends React.Component<TagProps, any> {
     });
   }
 
-  animationEnd = (_, existed) => {
+  animationEnd = (_: string, existed: boolean) => {
     if (!existed && !this.state.closed) {
       this.setState({
         closed: true,
@@ -67,8 +73,12 @@ export default class Tag extends React.Component<TagProps, any> {
     }
   }
 
-  isPresetColor(color) {
-    return /^(pink|red|yellow|orange|cyan|green|blue|purple)(-inverse)?$/.test(color);
+  isPresetColor(color?: string): boolean {
+    if (!color) { return false; }
+    return (
+      /^(pink|red|yellow|orange|cyan|green|blue|purple|geekblue|magenta|volcano|gold|lime)(-inverse)?$/
+      .test(color)
+    );
   }
 
   render() {
@@ -85,9 +95,10 @@ export default class Tag extends React.Component<TagProps, any> {
       'onClose',
       'afterClose',
     ]);
-    const tagStyle = assign({
+    const tagStyle = {
       backgroundColor: (color && !isPresetColor) ? color : null,
-    }, style);
+      ...style,
+    };
     const tag = this.state.closed ? null : (
       <div
         data-show={!this.state.closing}
@@ -95,7 +106,7 @@ export default class Tag extends React.Component<TagProps, any> {
         className={classString}
         style={tagStyle}
       >
-        <span className={`${prefixCls}-text`}>{children}</span>
+        {children}
         {closeIcon}
       </div>
     );

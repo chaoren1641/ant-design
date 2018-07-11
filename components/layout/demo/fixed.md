@@ -1,6 +1,6 @@
 ---
 order: 6
-iframe: true
+iframe: 360
 title:
   zh-CN: 固定头部
   en-US: Fixed Header
@@ -16,11 +16,12 @@ Fixed Header is generally used to fix the top navigation to facilitate page swit
 
 ````jsx
 import { Layout, Menu, Breadcrumb } from 'antd';
+
 const { Header, Content, Footer } = Layout;
 
 ReactDOM.render(
   <Layout>
-    <Header className="header">
+    <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
       <div className="logo" />
       <Menu
         theme="dark"
@@ -33,36 +34,27 @@ ReactDOM.render(
         <Menu.Item key="3">nav 3</Menu.Item>
       </Menu>
     </Header>
-    <Content className="content">
-      <Breadcrumb style={{ margin: '12px 0' }}>
+    <Content style={{ padding: '0 50px', marginTop: 64 }}>
+      <Breadcrumb style={{ margin: '16px 0' }}>
         <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>List</Breadcrumb.Item>
         <Breadcrumb.Item>App</Breadcrumb.Item>
       </Breadcrumb>
-      <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>Content</div>
+      <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>Content</div>
     </Content>
     <Footer style={{ textAlign: 'center' }}>
       Ant Design ©2016 Created by Ant UED
     </Footer>
-  </Layout>
-, mountNode);
+  </Layout>,
+  mountNode);
 ````
 
 ````css
 #components-layout-demo-fixed .logo {
   width: 120px;
   height: 31px;
-  background: #333;
-  border-radius: 6px;
+  background: rgba(255,255,255,.2);  
   margin: 16px 24px 16px 0;
   float: left;
-}
-#components-layout-demo-fixed .header {
-  position: fixed;
-  width: 100%;
-}
-#components-layout-demo-fixed .content {
-  padding: 0 50px;
-  margin-top: 64px;
 }
 ````

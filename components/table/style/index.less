@@ -2,21 +2,23 @@
 @import "../../style/mixins/index";
 
 @table-prefix-cls: ~"@{ant-prefix}-table";
-@table-head-background-color: @background-color-base;
+@table-header-icon-color: @text-color-secondary;
 
 .@{table-prefix-cls}-wrapper {
   .clearfix;
 }
 
 .@{table-prefix-cls} {
-  font-size: @font-size-base;
-  color: @text-color;
-  overflow: hidden;
+  .reset-component;
   position: relative;
-  border-radius: @border-radius-base @border-radius-base 0 0;
+  clear: both;
 
   &-body {
-    transition: opacity 0.3s ease;
+    transition: opacity .3s;
+  }
+
+  &-empty &-body {
+    overflow: auto !important;
   }
 
   table {
@@ -25,33 +27,64 @@
     border-spacing: 0;
     text-align: left;
     border-radius: @border-radius-base @border-radius-base 0 0;
-    overflow: hidden;
   }
 
   &-thead > tr > th {
-    background: @table-head-background-color;
-    font-weight: 500;
+    background: @table-header-bg;
     transition: background .3s ease;
     text-align: left;
     color: @heading-color;
+    font-weight: 500;
+    border-bottom: @border-width-base @border-style-base @border-color-split;
 
     &[colspan] {
       text-align: center;
     }
 
-    .@{iconfont-css-prefix}-filter {
-      margin-left: 4px;
+    .@{iconfont-css-prefix}-filter,
+    .@{table-prefix-cls}-filter-icon {
+      position: relative;
+      margin-left: 8px;
       font-size: @font-size-base;
       cursor: pointer;
-      color: #aaa;
+      color: @table-header-icon-color;
       transition: all .3s;
+      width: 14px;
+      font-weight: normal;
+      vertical-align: text-bottom;
+
       &:hover {
         color: @text-color;
       }
     }
 
+    .@{table-prefix-cls}-column-sorter + .@{iconfont-css-prefix}-filter {
+      margin-left: 4px;
+    }
+
     .@{table-prefix-cls}-filter-selected.@{iconfont-css-prefix}-filter {
       color: @primary-color;
+    }
+
+    // https://github.com/ant-design/ant-design/issues/8979
+    &.@{table-prefix-cls}-column-has-filters {
+      overflow: hidden;
+    }
+  }
+
+  &-thead > tr:first-child > th {
+    &:first-child {
+      border-top-left-radius: @border-radius-base;
+    }
+
+    &:last-child {
+      border-top-right-radius: @border-radius-base;
+    }
+  }
+
+  &-thead > tr:not(:last-child) > th {
+    &[colspan] {
+      border-bottom: 0;
     }
   }
 
@@ -66,7 +99,7 @@
     &.@{table-prefix-cls}-row-hover,
     &:hover {
       & > td {
-        background: @primary-1;
+        background: @table-row-hover-bg;
       }
     }
   }
@@ -76,14 +109,15 @@
   }
 
   &-footer {
-    padding: 16px 8px;
-    background: @table-head-background-color;
+    padding: @table-padding-vertical @table-padding-horizontal;
+    background: @table-header-bg;
     border-radius: 0 0 @border-radius-base @border-radius-base;
     position: relative;
+    border-top: @border-width-base @border-style-base @border-color-split;
     &:before {
       content: '';
       height: 1px;
-      background: @table-head-background-color;
+      background: @table-header-bg;
       position: absolute;
       top: -1px;
       width: 100%;
@@ -96,7 +130,7 @@
   }
 
   &-title {
-    padding: 16px 0;
+    padding: @table-padding-vertical 0;
     position: relative;
     top: 1px;
     border-radius: @border-radius-base @border-radius-base 0 0;
@@ -104,8 +138,8 @@
 
   &.@{table-prefix-cls}-bordered &-title {
     border: @border-width-base @border-style-base @border-color-split;
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: @table-padding-horizontal;
+    padding-right: @table-padding-horizontal;
   }
 
   &-title + &-content {
@@ -114,7 +148,8 @@
     overflow: hidden;
     .@{table-prefix-cls}-bordered & {
       &,
-      table {
+      table,
+      .@{table-prefix-cls}-thead > tr:first-child > th {
         border-radius: 0;
       }
     }
@@ -126,21 +161,21 @@
     border-radius: 0;
   }
 
-  &-tbody > tr.@{table-prefix-cls}-row-selected {
-    background: #fafafa;
+  &-tbody > tr.@{table-prefix-cls}-row-selected td {
+    background: @table-selected-row-bg;
   }
 
   &-thead > tr > th.@{table-prefix-cls}-column-sort {
-    background: #eaeaea;
+    background: @table-header-sort-bg;
   }
 
   &-thead > tr > th,
   &-tbody > tr > td {
-    padding: 16px 8px;
-    word-break: break-all;
+    padding: @table-padding-vertical @table-padding-horizontal;
+    word-break: break-word;
   }
 
-  &-thead > tr > th.@{table-prefix-cls}-selection-column {
+  &-thead > tr > th.@{table-prefix-cls}-selection-column-custom {
     padding-left: 16px;
     padding-right: 0;
   }
@@ -148,17 +183,22 @@
   &-thead > tr > th.@{table-prefix-cls}-selection-column,
   &-tbody > tr > td.@{table-prefix-cls}-selection-column {
     text-align: center;
+    min-width: 62px;
     width: 62px;
+    .@{ant-prefix}-radio-wrapper {
+      margin-right: 0;
+    }
   }
 
   &-expand-icon-th,
   &-row-expand-icon-cell {
     text-align: center;
+    min-width: 50px;
     width: 50px;
   }
 
   &-header {
-    background: @table-head-background-color;
+    background: @table-header-bg;
     overflow: hidden;
   }
 
@@ -188,77 +228,27 @@
     }
   }
 
-  &-middle {
-    .@{table-prefix-cls}-thead > tr > th:not(.@{table-prefix-cls}-selection-column),
-    .@{table-prefix-cls}-tbody > tr > td {
-      padding: 10px 8px;
-    }
-
-    .@{table-prefix-cls}-title,
-    .@{table-prefix-cls}-footer {
-      padding: 10px 8px;
-    }
-  }
-
-  &-small {
-    border: @border-width-base @border-style-base @border-color-split;
-    border-radius: @border-radius-base;
-
-    .@{table-prefix-cls}-header > table,
-    .@{table-prefix-cls}-body > table {
-      border: 0;
-      padding: 0 8px;
-    }
-
-    .@{table-prefix-cls}-thead > tr > th {
-      background: @component-background;
-      border-bottom: @border-width-base @border-style-base @border-color-split;
-    }
-
-    .@{table-prefix-cls}-tbody > tr > td {
-      padding: 6px 8px;
-    }
-
-    .@{table-prefix-cls}-title,
-    .@{table-prefix-cls}-footer,
-    .@{table-prefix-cls}-thead > tr > th:not(.@{table-prefix-cls}-selection-column) {
-      padding: 10px 8px;
-    }
-
-    .@{table-prefix-cls}-title {
-      border-bottom: @border-width-base @border-style-base @border-color-split;
-      top: 0;
-    }
-
-    .@{table-prefix-cls}-header {
-      background: @component-background;
-      table {
-        border-bottom: @border-width-base @border-style-base @border-color-split;
-      }
-    }
-
-    .@{table-prefix-cls}-placeholder,
-    .@{table-prefix-cls}-row:last-child td {
-      border-bottom: 0;
-    }
-  }
-
   &-column-sorter {
-    margin-left: 4px;
+    position: relative;
+    margin-left: 8px;
     display: inline-block;
-    width: 12px;
-    height: 14px;
+    width: 14px;
+    height: @font-size-base;
     vertical-align: middle;
     text-align: center;
+    font-weight: normal;
+    color: @table-header-icon-color;
+
     &-up,
     &-down {
-      line-height: 4px;
-      height: 5px;
       display: block;
-      width: 12px;
+      width: 14px;
+      height: @font-size-base / 2 - 1px;
+      line-height: @font-size-base / 2 - 1px;
       cursor: pointer;
+      position: relative;
       &:hover .@{iconfont-css-prefix} {
-        color: @text-color;
+        color: @primary-4;
       }
       &.on {
         .@{iconfont-css-prefix}-caret-up,
@@ -266,16 +256,40 @@
           color: @primary-color;
         }
       }
+
+      &:after {
+        position: absolute;
+        content: '';
+        height: 30px;
+        width: 14px;
+        left: 0;
+      }
     }
+
+    &-up:after {
+      bottom: 0;
+    }
+
+    &-down:after {
+      top: 0;
+    }
+
     .@{iconfont-css-prefix}-caret-up,
     .@{iconfont-css-prefix}-caret-down {
-      .iconfont-size-under-12px(7px);
-      line-height: 6px;
-      height: 6px;
-      color: #aaa;
-      &:before {
-        -moz-transform-origin: 53% 50%; /* fix firefox position */
-      }
+      .iconfont-size-under-12px(8px);
+      line-height: 4px;
+      height: 4px;
+      transition: all .3s;
+      position: relative;
+      display: block;
+    }
+
+    &-down {
+      margin-top: 1.5px;
+    }
+
+    .@{iconfont-css-prefix}-caret-up {
+      margin-top: 0.5px;
     }
   }
 
@@ -316,7 +330,7 @@
       }
     }
 
-    .@{table-prefix-cls}-thead > tr > th {
+    .@{table-prefix-cls}-thead > tr:not(:last-child) > th {
       border-bottom: @border-width-base @border-style-base @border-color-split;
     }
 
@@ -324,54 +338,23 @@
     .@{table-prefix-cls}-tbody > tr > td {
       border-right: @border-width-base @border-style-base @border-color-split;
     }
-
-    &.@{table-prefix-cls}-small {
-      border-right: 0;
-
-      .@{table-prefix-cls}-header > table,
-      .@{table-prefix-cls}-body > table,
-      .@{table-prefix-cls}-fixed-left table,
-      .@{table-prefix-cls}-fixed-right table {
-        border: 0;
-        padding: 0;
-      }
-
-      .@{table-prefix-cls}-title {
-        border: 0;
-        border-bottom: @border-width-base @border-style-base @border-color-split;
-        border-right: @border-width-base @border-style-base @border-color-split;
-      }
-
-      .@{table-prefix-cls}-footer {
-        border: 0;
-        border-top: @border-width-base @border-style-base @border-color-split;
-        border-right: @border-width-base @border-style-base @border-color-split;
-        &:before {
-          display: none;
-        }
-      }
-
-      .@{table-prefix-cls}-placeholder {
-        border-left: 0;
-        border-bottom: 0;
-      }
-    }
   }
 
   &-placeholder {
     position: relative;
-    padding: 16px 8px;
+    padding: @table-padding-vertical @table-padding-horizontal;
     background: @component-background;
     border-bottom: @border-width-base @border-style-base @border-color-split;
     text-align: center;
     font-size: @font-size-base;
     color: @text-color-secondary;
+    z-index: 1;
     .@{iconfont-css-prefix} {
       margin-right: 4px;
     }
   }
 
-  &-pagination {
+  &-pagination.@{ant-prefix}-pagination {
     margin: 16px 0;
     float: right;
   }
@@ -395,7 +378,7 @@
       }
 
       &-item > label + span {
-        padding: 0;
+        padding-right: 0;
       }
 
       &-sub {
@@ -407,7 +390,7 @@
         .@{ant-prefix}-dropdown-menu-submenu-title:after {
           color: @primary-color;
           font-weight: bold;
-          text-shadow: 0 0 2px@primary-2;
+          text-shadow: 0 0 2px @primary-2;
         }
       }
     }
@@ -423,7 +406,7 @@
 
     &-btns {
       overflow: hidden;
-      padding: 7px 16px;
+      padding: 7px 8px;
       border-top: @border-width-base @border-style-base @border-color-split;
     }
 
@@ -445,12 +428,13 @@
   }
 
   &-selection {
-    &-select-all {
+    &-select-all-custom {
       margin-right: 4px !important;
     }
 
     .@{iconfont-css-prefix}-down {
-      color: #aaa;
+      color: @table-header-icon-color;
+      transition: all .3s;
     }
 
     &-menu {
@@ -462,7 +446,7 @@
       box-shadow: @box-shadow-base;
 
       .@{ant-prefix}-action-down {
-        color: #aaa;
+        color: @table-header-icon-color;
       }
     }
 
@@ -470,8 +454,10 @@
       cursor: pointer;
       padding: 0;
       display: inline-block;
-      vertical-align: middle;
       line-height: 1;
+      &:hover .@{iconfont-css-prefix}-down {
+        color: #666;
+      }
     }
   }
 
@@ -511,7 +497,7 @@
   tr&-expanded-row {
     &,
     &:hover {
-      background: #fbfbfb;
+      background: @table-expanded-row-bg;
     }
   }
 
@@ -532,7 +518,7 @@
     height: 100%;
   }
 
-  &-fixed-header &-body {
+  &-fixed-header > &-content > &-scroll > &-body {
     position: relative;
     background: @component-background;
   }
@@ -543,12 +529,6 @@
 
   &-fixed-header &-scroll &-header {
     overflow: scroll;
-    padding-bottom: 20px;
-    margin-bottom: -20px;
-  }
-
-  /* fix firefox scrollbar bug */
-  &-fixed-header&-empty &-scroll &-body {
     padding-bottom: 20px;
     margin-bottom: -20px;
   }
@@ -589,6 +569,9 @@
     table {
       border-radius: @border-radius-base 0 0 0;
     }
+    .ant-table-thead > tr > th:last-child {
+      border-top-right-radius: 0;
+    }
   }
 
   &-fixed-right {
@@ -604,6 +587,9 @@
       color: transparent;
       pointer-events: none;
     }
+    .ant-table-thead > tr > th:first-child {
+      border-top-left-radius: 0;
+    }
   }
 
   &&-scroll-position-left &-fixed-left {
@@ -614,3 +600,5 @@
     box-shadow: none;
   }
 }
+
+@import './size';

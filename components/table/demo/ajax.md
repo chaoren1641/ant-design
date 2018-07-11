@@ -48,8 +48,9 @@ class App extends React.Component {
     pagination: {},
     loading: false,
   };
+
   handleTableChange = (pagination, filters, sorter) => {
-    const pager = this.state.pagination;
+    const pager = { ...this.state.pagination };
     pager.current = pagination.current;
     this.setState({
       pagination: pager,
@@ -62,6 +63,7 @@ class App extends React.Component {
       ...filters,
     });
   }
+
   fetch = (params = {}) => {
     console.log('params:', params);
     this.setState({ loading: true });
@@ -74,7 +76,7 @@ class App extends React.Component {
       },
       type: 'json',
     }).then((data) => {
-      const pagination = this.state.pagination;
+      const pagination = { ...this.state.pagination };
       // Read total count from server
       // pagination.total = data.totalCount;
       pagination.total = 200;
@@ -85,13 +87,16 @@ class App extends React.Component {
       });
     });
   }
+
   componentDidMount() {
     this.fetch();
   }
+
   render() {
     return (
-      <Table columns={columns}
-        rowKey={record => record.registered}
+      <Table
+        columns={columns}
+        rowKey={record => record.login.uuid}
         dataSource={this.state.data}
         pagination={this.state.pagination}
         loading={this.state.loading}

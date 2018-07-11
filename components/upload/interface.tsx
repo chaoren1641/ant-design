@@ -1,28 +1,37 @@
-import React from 'react';
+import * as React from 'react';
 
-export type UploadFileStatus = 'error' | 'success' | 'done' | 'uploading' | 'removed'
+export type UploadFileStatus = 'error' | 'success' | 'done' | 'uploading' | 'removed';
 
 export interface HttpRequestHeader {
   [key: string]: string;
 }
 
-export interface File {
+export interface RcFile extends File {
+  uid: number;
+}
+
+export interface UploadFile {
   uid: number;
   size: number;
   name: string;
+  filename?: string;
+  lastModified?: number;
   lastModifiedDate?: Date;
   url?: string;
   status?: UploadFileStatus;
   percent?: number;
   thumbUrl?: string;
+  isNotImage?: boolean;
   originFileObj?: File;
-  response?: string;
+  response?: any;
   error?: any;
+  linkProps?: any;
+  type: string;
 }
 
 export interface UploadChangeParam {
-  file: File;
-  fileList: Array<File>;
+  file: UploadFile;
+  fileList: Array<UploadFile>;
   event?: { percent: number };
 }
 
@@ -38,23 +47,26 @@ export interface UploadLocale {
   previewFile?: string;
 }
 
+export type UploadType = 'drag' | 'select';
+export type UploadListType = 'text' | 'picture' | 'picture-card';
+
 export interface UploadProps {
-  type?: 'drag' | 'select';
+  type?: UploadType;
   name?: string;
-  defaultFileList?: Array<File>;
-  fileList?: Array<File>;
-  action: string;
-  data?: Object | ((file: File) => any);
+  defaultFileList?: Array<UploadFile>;
+  fileList?: Array<UploadFile>;
+  action?: string;
+  data?: Object | ((file: UploadFile) => any);
   headers?: HttpRequestHeader;
   showUploadList?: boolean | ShowUploadListInterface;
   multiple?: boolean;
   accept?: string;
-  beforeUpload?: (file: File, FileList: File[]) => boolean | PromiseLike<any>;
+  beforeUpload?: (file: RcFile, FileList: RcFile[]) => boolean | PromiseLike<any>;
   onChange?: (info: UploadChangeParam) => void;
-  listType?: 'text' | 'picture' | 'picture-card';
+  listType?: UploadListType;
   className?: string;
-  onPreview?: (file: File) => void;
-  onRemove?: (file: File) => void | boolean;
+  onPreview?: (file: UploadFile) => void;
+  onRemove?: (file: UploadFile) => void | boolean;
   supportServerRender?: boolean;
   style?: React.CSSProperties;
   disabled?: boolean;
@@ -64,11 +76,16 @@ export interface UploadProps {
   locale?: UploadLocale;
 }
 
+export interface UploadState {
+  fileList: UploadFile[];
+  dragState: string;
+}
+
 export interface UploadListProps {
-  listType?: 'text' | 'picture' | 'picture-card';
-  onPreview?: (file: File) => void;
-  onRemove?: (file: File) => void | boolean;
-  items?: Array<File>;
+  listType?: UploadListType;
+  onPreview?: (file: UploadFile) => void;
+  onRemove?: (file: UploadFile) => void | boolean;
+  items?: Array<UploadFile>;
   progressAttr?: Object;
   prefixCls?: string;
   showRemoveIcon?: boolean;
